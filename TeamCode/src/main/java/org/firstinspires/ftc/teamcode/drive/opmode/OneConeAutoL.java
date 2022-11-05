@@ -49,15 +49,15 @@ public class OneConeAutoL extends LinearOpMode {
         //intaketilt.setPosition(0.58);
 
         //moving right to our substation
-        drive.setMotorPowers(0.3,-0.4,0.3,-0.3);
+        drive.setMotorPowers(0.1,-0.1,0.1,-0.1);
         sleep(1750);
 
         //moving forward
-        drive.setMotorPowers(0.3,0.3,0.3,0.3);
+        drive.setMotorPowers(0.1,0.1,0.1,0.1);
         sleep(1750);
 
         //moving a small bit right
-        drive.setMotorPowers(0.3,-0.4,0.3,-0.3);
+        drive.setMotorPowers(0.1,-0.1,0.1,-0.1);
         sleep(750);
 
         //lift  up
@@ -81,11 +81,11 @@ public class OneConeAutoL extends LinearOpMode {
         lift.setPower(0.5);
 
         //moving a small bit left
-        drive.setMotorPowers(-0.3, 0.4, -0.3, 0.3);
+        drive.setMotorPowers(-0.1, 0.1, -0.1, 0.1);
         sleep (1000);
 
         //go backward into substation
-        drive.setMotorPowers(-0.3, -0.3, -0.3, -0.3);
+        drive.setMotorPowers(-0.1, -0.1, -0.1, -0.1);
         sleep(3000);
 
         }
