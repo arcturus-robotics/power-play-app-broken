@@ -125,18 +125,33 @@ public class TwoConeAutoL extends LinearOpMode {
             sleep(1000);
         
         }
-
-        //going right a bit
+        
+        //dummy variable
+        parking_location = 1
+        
+        //if signal sleeve means park in nearest location
+        if (parking_location == 1){
         drive.setMotorPowers(0.3, -0.3, 0.3, -0.3);
         sleep(1000);
+        }
+        
+        //if signal sleeve means park in middle location
+        if (parking_location == 2){
+        drive.setMotorPowers(0.3, -0.3, 0.3, -0.3);
+        sleep(2000)
+        }
+        
+        //if signal sleeve means park in farthest location
+        if (parking_location == 3){
+        drive.setMotorPowers(0.3, -0.3, 0.3, -0.3);
+        sleep(3000)
+        }
         
         //lift claw to ground position
         lift.setTargetPosition(0);
         lift.setPower(0.5);
 
-        //Going backward
-        drive.setMotorPowers(-0.3, -0.3, -0.3, -0.3);
-        sleep(3000);
+                
 
 
     }
