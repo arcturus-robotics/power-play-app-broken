@@ -75,46 +75,56 @@ public class TwoConeAutoL extends LinearOpMode {
         //go backward
         drive.setMotorPowers(-0.1,-0.1,-0.1,-0.1);
         sleep (1000);
+        
+        
+        //setting TargetPosition variable
+        int positioningforloop = 1687.5
 
-        //going left cone stacks
-        drive.setMotorPowers(0.3, -0.3, 0.3, -0.3);
-        sleep(3000);
+        for (int i = 0; i < 6; i++) {
+            //going left cone stacks
+            drive.setMotorPowers(0.3, -0.3, 0.3, -0.3);
+            sleep(3000);
 
-        //lift claw to grabbing position
-        lift.setTargetPosition(0);
-        lift.setPower(1687.5);
+            //lift claw to grabbing position
+            lift.setTargetPosition(positioningforloop);
+            lift.setPower(0.5);
+            
+            // lowering the Target Position variable
+            int positioningforloop -= 300
 
-        //going forward
-        drive.setMotorPowers(0.3, 0.3, 0.3, 0.3);
-        sleep(1200);
+            //going forward
+            drive.setMotorPowers(0.3, 0.3, 0.3, 0.3);
+            sleep(1200);
 
-        //close claw
-        claw.setPosition(9);
-        sleep(1000);
+            //close claw
+            claw.setPosition(9);
+            sleep(1000);
 
-        //going backward
-        drive.setMotorPowers(-0.3, -0.3, -0.3, -0.3);
-        sleep(1200);
+            //going backward
+            drive.setMotorPowers(-0.3, -0.3, -0.3, -0.3);
+            sleep(1200);
 
-        //lift claw to dropping position
-        lift.setTargetPosition(4400);
-        lift.setPower(0.5);
+            //lift claw to dropping position
+            lift.setTargetPosition(4400);
+            lift.setPower(0.5);
 
-        //going right to pole
-        drive.setMotorPowers(-0.3, 0.3, -0.3, 0.3);
-        sleep(3000);
+            //going right to pole
+            drive.setMotorPowers(-0.3, 0.3, -0.3, 0.3);
+            sleep(3000);
 
-        //going forward
-        drive.setMotorPowers(0.3, 0.3, 0.3, 0.3);
-        sleep(1000);
+            //going forward
+            drive.setMotorPowers(0.3, 0.3, 0.3, 0.3);
+            sleep(1000);
 
-        //opening claw
-        claw.setPosition(0.65);
-        sleep(1000);
+                //opening claw
+            claw.setPosition(0.65);
+            sleep(1000);
 
-        //going backward
-        drive.setMotorPowers(-0.3, -0.3, -0.3, -0.3);
-        sleep(1000);
+            //going backward
+            drive.setMotorPowers(-0.3, -0.3, -0.3, -0.3);
+            sleep(1000);
+        
+        }
 
         //going right a bit
         drive.setMotorPowers(0.3, -0.3, 0.3, -0.3);
