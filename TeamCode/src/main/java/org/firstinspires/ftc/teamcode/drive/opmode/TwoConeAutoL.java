@@ -49,7 +49,7 @@ public class TwoConeAutoL extends LinearOpMode {
         //intaketilt.setPosition(0.58);
 
         //moving right to our substation
-        drive.setMotorPowers(0.3,-0.4,0.3,-0.3);
+        drive.setMotorPowers(0.3,-0.3,0.3,-0.3);
         sleep(1750);
 
         //moving forward
@@ -57,7 +57,7 @@ public class TwoConeAutoL extends LinearOpMode {
         sleep(1750);
 
         //moving a small bit right
-        drive.setMotorPowers(0.3,-0.4,0.3,-0.3);
+        drive.setMotorPowers(0.3,-0.3,0.3,-0.3);
         sleep(750);
 
         //lift  up
@@ -77,7 +77,7 @@ public class TwoConeAutoL extends LinearOpMode {
         sleep (1000);
 
         //going left cone stacks
-        drive.setMotorPowers(0.3, -0.4, 0.3, -0.3);
+        drive.setMotorPowers(0.3, -0.3, 0.3, -0.3);
         sleep(3000);
 
         //lift claw to grabbing position
@@ -85,7 +85,7 @@ public class TwoConeAutoL extends LinearOpMode {
         lift.setPower(1687.5);
 
         //going forward
-        drive.setMotorPowers(0.3, 0.4, 0.3, 0.3);
+        drive.setMotorPowers(0.3, 0.3, 0.3, 0.3);
         sleep(1200);
 
         //close claw
@@ -93,7 +93,7 @@ public class TwoConeAutoL extends LinearOpMode {
         sleep(1000);
 
         //going backward
-        drive.setMotorPowers(-0.3, -0.4, -0.3, -0.3);
+        drive.setMotorPowers(-0.3, -0.3, -0.3, -0.3);
         sleep(1200);
 
         //lift claw to dropping position
@@ -101,11 +101,11 @@ public class TwoConeAutoL extends LinearOpMode {
         lift.setPower(0.5);
 
         //going right to pole
-        drive.setMotorPowers(-0.3, 0.4, -0.3, 0.3);
+        drive.setMotorPowers(-0.3, 0.3, -0.3, 0.3);
         sleep(3000);
 
         //going forward
-        drive.setMotorPowers(0.3, 0.4, 0.3, 0.4);
+        drive.setMotorPowers(0.3, 0.3, 0.3, 0.3);
         sleep(1000);
 
         //opening claw
@@ -113,15 +113,19 @@ public class TwoConeAutoL extends LinearOpMode {
         sleep(1000);
 
         //going backward
-        drive.setMotorPowers(-0.3, -0.4, -0.3, -0.3);
+        drive.setMotorPowers(-0.3, -0.3, -0.3, -0.3);
         sleep(1000);
 
         //going right a bit
-        drive.setMotorPowers(0.3, -0.4, 0.3, -0.3);
+        drive.setMotorPowers(0.3, -0.3, 0.3, -0.3);
         sleep(1000);
+        
+        //lift claw to ground position
+        lift.setTargetPosition(0);
+        lift.setPower(0.5);
 
         //Going backward
-        drive.setMotorPowers(-0.3, -0.4, -0.3, -0.3);
+        drive.setMotorPowers(-0.3, -0.3, -0.3, -0.3);
         sleep(3000);
 
 
@@ -129,5 +133,3 @@ public class TwoConeAutoL extends LinearOpMode {
 
 
 }
-
-
