@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.ArcturusDrive;
@@ -11,21 +12,21 @@ import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.ArrayList;
 
 @Autonomous
 public class PPVisionAuto extends LinearOpMode
 {
-    private ArcturusDrive drive;
-    private double number;
-    private DcMotorEx lift,leftFront, leftRear, rightRear, rightFront;
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
-
-
     static final double FEET_PER_METER = 3.28084;
+    private ArcturusDrive drive;
+    private DcMotorEx lift,leftFront, leftRear, rightRear, rightFront;
+    private Servo claw;
+
 
     // Lens intrinsics
     // UNITS ARE PIXELS
@@ -39,11 +40,9 @@ public class PPVisionAuto extends LinearOpMode
     // UNITS ARE METERS
     double tagsize = 0.166;
 
-    int IDTOI = 0;
+    int IDTOI1 = 0;
     int IDTOI2 = 1;
-    int IDTOI3 = 2;
-
-    // Tag ID 18 from the 36h11 family
+    int IDTOI3 = 2;// Tag ID 18 from the 36h11 family
 
     AprilTagDetection tagOfInterest = null;
 
@@ -53,10 +52,13 @@ public class PPVisionAuto extends LinearOpMode
         drive = new ArcturusDrive(hardwareMap);
         //
         // intaketilt = hardwareMap.get(Servo.class, "ringpusher");
-        leftFront = hardwareMap.get(DcMotorEx .class, "leftFront");
+        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+
+        claw = hardwareMap.get(Servo.class, "claw");
+        claw.setPosition(0.9);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
@@ -93,7 +95,7 @@ public class PPVisionAuto extends LinearOpMode
 
                 for(AprilTagDetection tag : currentDetections)
                 {
-                    if(tag.id == IDTOI || tag.id == IDTOI2 || tag.id == IDTOI3)
+                    if(tag.id == IDTOI1 || tag.id == IDTOI2 || tag.id == IDTOI3)
                     {
                         tagOfInterest = tag;
                         tagFound = true;
@@ -170,41 +172,59 @@ public class PPVisionAuto extends LinearOpMode
         }
         else
         {
-            if(tagOfInterest.id == IDTOI) {
-
-                drive.setMotorPowers(0.1,-0.1,0.1,-0.1);
+            if(tagOfInterest.id == IDTOI1){
+                leftFront.setPower(0.1);
+                rightFront.setPower(-0.1);
+                rightRear.setPower(0.1);
+                leftRear.setPower(-0.1);
                 sleep(1000);
-                drive.setMotorPowers(0.1,0.1,0.1,0.1);
+                leftFront.setPower(0.1);
+                rightFront.setPower(0.1);
+                rightRear.setPower(0.1);
+                leftRear.setPower(0.1);
                 sleep(1000);
-
-
             }
-            if(tagOfInterest.id == IDTOI2) {
-
-                drive.setMotorPowers(0.1,0.1,0.1,0.1);
+            else if(tagOfInterest.id == IDTOI2){
+                leftFront.setPower(0.1);
+                rightFront.setPower(0.1);
+                rightRear.setPower(0.1);
+                leftRear.setPower(0.1);
                 sleep(1000);
-             ;
             }
-            if(tagOfInterest.id == IDTOI3) {
-
-
-                drive.setMotorPowers(-0.01,0.01,-0.01,0.01);
+            else {
+                leftFront.setPower(-0.1);
+                rightFront.setPower(0.1);
+                rightRear.setPower(-0.1);
+                leftRear.setPower(0.1);
                 sleep(1000);
-                drive.setMotorPowers(0.01,0.01,0.01,0.01);
+                leftFront.setPower(0.1);
+                rightFront.setPower(0.1);
+                rightRear.setPower(0.1);
+                leftRear.setPower(0.1);
                 sleep(1000);
-
             }
             /*
              * Insert your autonomous code here, probably using the tag pose to decide your configuration.
              */
-            
-            // e.g.
 
+            // e.g.
+            if(tagOfInterest.pose.x <= 20)
+            {
+                // do something
+            }
+            else if(tagOfInterest.pose.x >= 20 && tagOfInterest.pose.x <= 50)
+            {
+                // do something else
+            }
+            else if(tagOfInterest.pose.x >= 50)
+            {
+                // do something else
+            }
         }
 
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-//        while (opModeIsActive()) {sleep(20);}
+        while (opModeIsActive()) {sleep(20);}
     }
 
     void tagToTelemetry(AprilTagDetection detection)
