@@ -148,8 +148,9 @@ public class PPVisionAuto extends LinearOpMode
         }
 
         lift =  hardwareMap.get(DcMotorEx.class, "leftShooter");
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         lift.setTargetPosition(200);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
 
         /*
          * The START command just came in: now work off the latest snapshot acquired
@@ -170,72 +171,71 @@ public class PPVisionAuto extends LinearOpMode
         }
 
         /* Actually do something useful */
-        if(tagOfInterest == null){
-            leftFront.setPower(0.1);
-            rightFront.setPower(0.1);
-            rightRear.setPower(0.1);
-            leftRear.setPower(0.1);
-            sleep(1000);
+        //if(tagOfInterest == null){
+           // leftFront.setPower(0.1);
+            //rightFront.setPower(0.1);
+            //rightRear.setPower(0.1);
+            //leftRear.setPower(0.1);
+            //sleep(1000);
             /*
              * Insert your autonomous code here, presumably running some default configuration
              * since the tag was never sighted during INIT
              */
+        //}
+        //else
+        //{
+        if(tagOfInterest.id == IDTOI1){
+            leftFront.setPower(0.3);
+            rightFront.setPower(-0.3);
+            rightRear.setPower(0.3);
+            leftRear.setPower(-0.3);
+            sleep(1500);
+            leftFront.setPower(0.3);
+            rightFront.setPower(0.3);
+            rightRear.setPower(0.3);
+            leftRear.setPower(0.3);
+            sleep(1000);
         }
-        else
-        {
-            if(tagOfInterest.id == IDTOI1){
-                leftFront.setPower(0.1);
-                rightFront.setPower(-0.1);
-                rightRear.setPower(0.1);
-                leftRear.setPower(-0.1);
-                sleep(500);
-                leftFront.setPower(0.1);
-                rightFront.setPower(0.1);
-                rightRear.setPower(0.1);
-                leftRear.setPower(0.1);
-                sleep(1000);
-            }
-            else if(tagOfInterest.id == IDTOI2){
-                leftFront.setPower(0.1);
-                rightFront.setPower(0.1);
-                rightRear.setPower(0.1);
-                leftRear.setPower(0.1);
-                sleep(1000);
-            }
-            else {
-                leftFront.setPower(-0.1);
-                rightFront.setPower(0.1);
-                rightRear.setPower(-0.1);
-                leftRear.setPower(0.1);
-                sleep(500);
-                leftFront.setPower(0.1);
-                rightFront.setPower(0.1);
-                rightRear.setPower(0.1);
-                leftRear.setPower(0.1);
-                sleep(1000);
-            }
+        else if(tagOfInterest.id == IDTOI2){
+            leftFront.setPower(0.3);
+            rightFront.setPower(0.3);
+            rightRear.setPower(0.3);
+            leftRear.setPower(0.3);
+            sleep(1000);
+        }
+        else {
+            leftFront.setPower(-0.3);
+            rightFront.setPower(0.3);
+            rightRear.setPower(-0.3);
+            leftRear.setPower(0.3);
+            sleep(1500);
+            leftFront.setPower(0.3);
+            rightFront.setPower(0.3);
+            rightRear.setPower(0.3);
+            leftRear.setPower(0.3);
+            sleep(1000);
+        }
             /*
              * Insert your autonomous code here, probably using the tag pose to decide your configuration.
              */
 
             // e.g.
-            if(tagOfInterest.pose.x <= 20)
-            {
+        if(tagOfInterest.pose.x <= 20) {
                 // do something
-            }
-            else if(tagOfInterest.pose.x >= 20 && tagOfInterest.pose.x <= 50)
-            {
-                // do something else
-            }
-            else if(tagOfInterest.pose.x >= 50)
-            {
-                // do something else
-            }
         }
+        else if(tagOfInterest.pose.x >= 20 && tagOfInterest.pose.x <= 50)
+        {
+                // do something else
+        }
+        else if(tagOfInterest.pose.x >= 50)
+        {
+                // do something else
+        }
+       // }
 
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-        while (opModeIsActive()) {sleep(20);}
+       // while (opModeIsActive()) {sleep(20);}
     }
 
     void tagToTelemetry(AprilTagDetection detection)
