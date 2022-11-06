@@ -24,20 +24,20 @@ import java.util.ArrayList;
 @TeleOp(group = "drive")
 public class PPTeleOP2 extends OpMode {
     // variables are set
-    private ArcturusDrive drive;
-    private DcMotorEx duckwheel, lift, lf, rf, rr, lr;
+    private DcMotorEx duckwheel;
+    private DcMotorEx lift;
+    private DcMotorEx lf;
+    private DcMotorEx rf;
+    private DcMotorEx rr;
+    private DcMotorEx lr;
     private Servo claw;
-    double duckspeed = 0.55;
-    double noodlespeed = 0.31;
-    boolean noodlePower = false;
-    boolean noodleintake = true;
+
     double clawpos;
     double liftpos;
 
     boolean PID = false;
     boolean upsies;
-    long freightboxdelay = 0;
-    double drivespeed = 3/4;
+
 
     /*int high = 7900; for previous spool
     int medium = 5800; for previous spool
@@ -45,11 +45,11 @@ public class PPTeleOP2 extends OpMode {
     // 4:7 = circumference of previous spool : circumference of new spool
     int maxheight = 5100;
     int high = 4400;
-    int medium = 3400;
-    int low = 2250;
+    int medium = 3200;
+    int low = 2000;
     int ground = 0;
     double WorkingMotorMax = 0.6825;
-    double MotorMaxSpeed = 0.7;
+    double MotorMaxSpeed = 0.8;
     int targetpos = 0;
     //double rightfrontpos,leftfrontpos,leftbackpos,rightbackpos;
 
@@ -59,8 +59,11 @@ public class PPTeleOP2 extends OpMode {
     @Override
 
     public void init() {
-        drive = new ArcturusDrive(hardwareMap);
-        //
+        lf = hardwareMap.get(DcMotorEx.class, "leftFront");
+        lr = hardwareMap.get(DcMotorEx.class, "leftRear");
+        rr = hardwareMap.get(DcMotorEx.class, "rightRear");
+        rf = hardwareMap.get(DcMotorEx.class, "rightFront");
+
         //  noodle = hardwareMap.get(DcMotorEx.class, "intake");
         duckwheel = hardwareMap.get(DcMotorEx.class, "front");
 
@@ -88,7 +91,6 @@ public class PPTeleOP2 extends OpMode {
 
     @Override
     public void loop() {
-        drive.update();
 
         double leftFront = -Range.clip(gamepad2.left_stick_y + gamepad2.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
         double leftRear = -Range.clip(gamepad2.left_stick_y - gamepad2.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
@@ -100,8 +102,10 @@ public class PPTeleOP2 extends OpMode {
 //        double rightFront = -Range.clip(gamepad2.right_stick_y - gamepad2.right_stick_x, -drivespeed, drivespeed);
 
         //drive.setMotorPowers(leftFront*drivespeed, leftRear*drivespeed, rightRear*drivespeed, rightFront*drivespeed);
-        drive.setMotorPowers(leftFront, leftRear, rightRear, rightFront);
-
+        lf.setPower(leftFront);
+        lr.setPower(leftRear);
+        rr.setPower(rightRear);
+        rf.setPower(rightFront);
 
         clawpos = claw.getPosition();
         liftpos = lift.getCurrentPosition();
@@ -221,11 +225,11 @@ public class PPTeleOP2 extends OpMode {
         }
 
         if (gamepad2.right_bumper) {
-            claw.setPosition( Range.clip(clawpos  + 0.02, 0.65, 0.9) );
+            claw.setPosition( Range.clip(clawpos  + 0.02, 0.7, 0.9) );
             // intaketilt.setPosition(0);
         }
         else if (gamepad2.left_bumper) {
-            claw.setPosition( Range.clip(clawpos  - 0.02, 0.65, 0.9) );
+            claw.setPosition( Range.clip(clawpos  - 0.02, 0.7, 0.9) );
             // intaketilt.setPcosition(1);
         }
         /*

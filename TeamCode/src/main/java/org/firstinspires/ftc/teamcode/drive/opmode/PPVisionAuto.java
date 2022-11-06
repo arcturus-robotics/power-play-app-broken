@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.drive.opmode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -23,7 +24,6 @@ public class PPVisionAuto extends LinearOpMode
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
     static final double FEET_PER_METER = 3.28084;
-    private ArcturusDrive drive;
     private DcMotorEx lift,leftFront, leftRear, rightRear, rightFront;
     private Servo claw;
 
@@ -49,7 +49,6 @@ public class PPVisionAuto extends LinearOpMode
     @Override
     public void runOpMode()
     {
-        drive = new ArcturusDrive(hardwareMap);
         //
         // intaketilt = hardwareMap.get(Servo.class, "ringpusher");
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
@@ -85,6 +84,10 @@ public class PPVisionAuto extends LinearOpMode
          * The INIT-loop:
          * This REPLACES waitForStart!
          */
+
+
+
+
         while (!isStarted() && !isStopRequested())
         {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
@@ -144,6 +147,10 @@ public class PPVisionAuto extends LinearOpMode
             sleep(20);
         }
 
+        lift =  hardwareMap.get(DcMotorEx.class, "leftShooter");
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setTargetPosition(200);
+
         /*
          * The START command just came in: now work off the latest snapshot acquired
          * during the init loop.
@@ -163,8 +170,12 @@ public class PPVisionAuto extends LinearOpMode
         }
 
         /* Actually do something useful */
-        if(tagOfInterest == null)
-        {
+        if(tagOfInterest == null){
+            leftFront.setPower(0.1);
+            rightFront.setPower(0.1);
+            rightRear.setPower(0.1);
+            leftRear.setPower(0.1);
+            sleep(1000);
             /*
              * Insert your autonomous code here, presumably running some default configuration
              * since the tag was never sighted during INIT
@@ -177,7 +188,7 @@ public class PPVisionAuto extends LinearOpMode
                 rightFront.setPower(-0.1);
                 rightRear.setPower(0.1);
                 leftRear.setPower(-0.1);
-                sleep(1000);
+                sleep(500);
                 leftFront.setPower(0.1);
                 rightFront.setPower(0.1);
                 rightRear.setPower(0.1);
@@ -196,7 +207,7 @@ public class PPVisionAuto extends LinearOpMode
                 rightFront.setPower(0.1);
                 rightRear.setPower(-0.1);
                 leftRear.setPower(0.1);
-                sleep(1000);
+                sleep(500);
                 leftFront.setPower(0.1);
                 rightFront.setPower(0.1);
                 rightRear.setPower(0.1);
