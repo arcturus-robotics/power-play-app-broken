@@ -189,31 +189,31 @@ public class PPVisionAuto extends LinearOpMode
             rightFront.setPower(-0.3);
             rightRear.setPower(0.3);
             leftRear.setPower(-0.3);
-            sleep(1500);
+            sleep(2000);
             leftFront.setPower(0.3);
             rightFront.setPower(0.3);
             rightRear.setPower(0.3);
             leftRear.setPower(0.3);
-            sleep(1000);
+            sleep(1500);
         }
         else if(tagOfInterest.id == IDTOI2){
             leftFront.setPower(0.3);
             rightFront.setPower(0.3);
             rightRear.setPower(0.3);
             leftRear.setPower(0.3);
-            sleep(1000);
+            sleep(1500);
         }
         else {
             leftFront.setPower(-0.3);
             rightFront.setPower(0.3);
             rightRear.setPower(-0.3);
             leftRear.setPower(0.3);
-            sleep(1500);
+            sleep(2000);
             leftFront.setPower(0.3);
             rightFront.setPower(0.3);
             rightRear.setPower(0.3);
             leftRear.setPower(0.3);
-            sleep(1000);
+            sleep(1500);
         }
             /*
              * Insert your autonomous code here, probably using the tag pose to decide your configuration.
