@@ -81,7 +81,7 @@ public class TwoConeAutoL extends LinearOpMode {
         sleep(3000);
 
         //lift claw to grabbing position
-        lift.setTargetPosition(1687.5);
+        lift.setTargetPosition(1687);
         lift.setPower(0.5);
         
         //going forward

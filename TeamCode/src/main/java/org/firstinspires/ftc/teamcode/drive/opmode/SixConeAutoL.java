@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.drive.ArcturusDrive;
 
 @Autonomous(group = "drive")
-public class TwoConeAutoL extends LinearOpMode {
+public class SixConeAutoL extends LinearOpMode {
     private ElapsedTime     runtime = new ElapsedTime();
 
     private static final Pose2d ORIGIN = new Pose2d(-63.0, -56.0, 0.0);
@@ -75,10 +75,10 @@ public class TwoConeAutoL extends LinearOpMode {
         //go backward
         drive.setMotorPowers(-0.1,-0.1,-0.1,-0.1);
         sleep (1000);
-        
-        
+
+
         //setting TargetPosition variable
-        int positioningforloop = 1687.5
+        int positioningforloop = 1687;
 
         for (int i = 0; i < 6; i++) {
             //going left cone stacks
@@ -88,9 +88,9 @@ public class TwoConeAutoL extends LinearOpMode {
             //lift claw to grabbing position
             lift.setTargetPosition(positioningforloop);
             lift.setPower(0.5);
-            
+
             // lowering the Target Position variable
-            int positioningforloop -= 300
+            positioningforloop -= 300;
 
             //going forward
             drive.setMotorPowers(0.3, 0.3, 0.3, 0.3);
@@ -116,42 +116,42 @@ public class TwoConeAutoL extends LinearOpMode {
             drive.setMotorPowers(0.3, 0.3, 0.3, 0.3);
             sleep(1000);
 
-                //opening claw
+            //opening claw
             claw.setPosition(0.65);
             sleep(1000);
 
             //going backward
             drive.setMotorPowers(-0.3, -0.3, -0.3, -0.3);
             sleep(1000);
-        
+
         }
-        
+
         //dummy variable
-        parking_location = 1
-        
+        int parking_location = 1;
+
         //if signal sleeve means park in nearest location
         if (parking_location == 1){
-        drive.setMotorPowers(0.3, -0.3, 0.3, -0.3);
-        sleep(1000);
+            drive.setMotorPowers(0.3, -0.3, 0.3, -0.3);
+            sleep(1000);
         }
-        
+
         //if signal sleeve means park in middle location
         if (parking_location == 2){
-        drive.setMotorPowers(0.3, -0.3, 0.3, -0.3);
-        sleep(2000)
+            drive.setMotorPowers(0.3, -0.3, 0.3, -0.3);
+            sleep(2000);
         }
-        
+
         //if signal sleeve means park in farthest location
         if (parking_location == 3){
-        drive.setMotorPowers(0.3, -0.3, 0.3, -0.3);
-        sleep(3000)
+            drive.setMotorPowers(0.3, -0.3, 0.3, -0.3);
+            sleep(3000);
         }
-        
+
         //lift claw to ground position
         lift.setTargetPosition(0);
         lift.setPower(0.5);
 
-                
+
 
 
     }
