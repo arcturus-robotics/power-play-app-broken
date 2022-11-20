@@ -2,23 +2,20 @@ package org.firstinspires.ftc.teamcode.drive.opmode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.drive.ArcturusDrive;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.ArrayList;
 
 @Autonomous
-public class PPVisionAuto extends LinearOpMode
+public class PPVisionAutoR extends LinearOpMode
 {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -193,12 +190,12 @@ public class PPVisionAuto extends LinearOpMode
         //else
         //
         if(tagOfInterest.id == IDTOI1){
-            leftFront.setPower(0.5);
-            rightFront.setPower(-0.5);
-            rightRear.setPower(0.5);
-            leftRear.setPower(-0.5);
-            sleep(1000);
-            //alex original number was 1300
+            leftFront.setPower(-0.5);
+            rightFront.setPower(0.5);
+            rightRear.setPower(-0.5);
+            leftRear.setPower(0.5);
+            sleep(1200);
+            //1200 right, 800 left
 
             leftFront.setPower(0);
             rightFront.setPower(0);
@@ -220,11 +217,11 @@ public class PPVisionAuto extends LinearOpMode
             sleep(2000);
         }
         else {
-            leftFront.setPower(-0.5);
-            rightFront.setPower(0.5);
-            rightRear.setPower(-0.5);
-            leftRear.setPower(0.5);
-            sleep(1300);
+            leftFront.setPower(0.5);
+            rightFront.setPower(-0.5);
+            rightRear.setPower(0.5);
+            leftRear.setPower(-0.5);
+            sleep(1000);
 
             leftFront.setPower(0);
             rightFront.setPower(0);
@@ -236,7 +233,7 @@ public class PPVisionAuto extends LinearOpMode
             rightFront.setPower(0.5);
             rightRear.setPower(0.5);
             leftRear.setPower(0.5);
-            sleep(1000);
+            sleep(900);
 
             /*
             leftFront.setPower(0.2);

@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.drive.ArcturusDrive;
+import org.firstinspires.ftc.teamcode.drive.ArcturusDriveRR;
 
 @Autonomous(group = "drive")
 public class PowerAutoStartL extends LinearOpMode {
@@ -16,7 +16,7 @@ public class PowerAutoStartL extends LinearOpMode {
 
     private static final Pose2d ORIGIN = new Pose2d(-63.0, -56.0, 0.0);
 
-    private ArcturusDrive drive;
+    private ArcturusDriveRR drive;
     private double number;
     private DcMotorEx lift, leftFront, leftRear, rightRear, rightFront;
     private Servo claw;
@@ -29,7 +29,7 @@ public class PowerAutoStartL extends LinearOpMode {
     public void runOpMode() {
         number = 0.5;
         // Dri
-        drive = new ArcturusDrive(hardwareMap);
+        drive = new ArcturusDriveRR(hardwareMap);
         //
         // intaketilt = hardwareMap.get(Servo.class, "ringpusher");
 

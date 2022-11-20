@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * but it will only use one of them.
  */
 @TeleOp(group = "drive")
-public class PPTeleOP2 extends OpMode {
+public class PPTeleOP3 extends OpMode {
     // variables are set
     private DcMotorEx duckwheel;
     private DcMotorEx lift;

@@ -2,23 +2,20 @@ package org.firstinspires.ftc.teamcode.drive.opmode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.drive.ArcturusDrive;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.ArrayList;
 
 @Autonomous
-public class PPVisionOneCone extends LinearOpMode
+public class PPVisionAutoL extends LinearOpMode
 {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -59,6 +56,7 @@ public class PPVisionOneCone extends LinearOpMode
 
         claw = hardwareMap.get(Servo.class, "claw");
         claw.setPosition(0.9);
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
@@ -148,14 +146,16 @@ public class PPVisionOneCone extends LinearOpMode
             sleep(20);
         }
 
-        lift.setTargetPosition(500);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
         /*
          * The START command just came in: now work off the latest snapshot acquired
          * during the init loop.
          */
+        lift.setTargetPosition(350);
+        lift.setPower(0.8);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        sleep(2000);
 
         /* Update the telemetry */
         if(tagOfInterest != null)
@@ -190,49 +190,65 @@ public class PPVisionOneCone extends LinearOpMode
         //else
         //
         if(tagOfInterest.id == IDTOI1){
-            //first  go to conescoring poisition
-            leftFront.setPower(0.3);
-            rightFront.setPower(-0.3);
-            rightRear.setPower(0.3);
-            leftRear.setPower(-0.3);
-            sleep(2000);
-            leftFront.setPower(0.3);
-            rightFront.setPower(0.3);
-            rightRear.setPower(0.3);
-            leftRear.setPower(0.3);
-            sleep(1700);
-            //at scoring position, raise lift and score cone
-            lift.setTargetPosition(4400);
-            lift.setPower(1);
-            leftFront.setPower(0.3);
-            rightFront.setPower(-0.3);
-            rightRear.setPower(0.3);
-            leftRear.setPower(-0.3);
-            sleep(2000);
-            leftFront.setPower(0.3);
-            rightFront.setPower(0.3);
-            rightRear.setPower(0.3);
-            leftRear.setPower(0.3);
-            sleep(1700);
+            leftFront.setPower(-0.5);
+            rightFront.setPower(0.5);
+            rightRear.setPower(-0.5);
+            leftRear.setPower(0.5);
+            sleep(1500);
+            //1200 right, 800 left
+
+            leftFront.setPower(0);
+            rightFront.setPower(0);
+            rightRear.setPower(0);
+            leftRear.setPower(0);
+            sleep(200);
+
+            leftFront.setPower(0.5);
+            rightFront.setPower(0.5);
+            rightRear.setPower(0.5);
+            leftRear.setPower(0.5);
+            sleep(1700*3/5);
         }
         else if(tagOfInterest.id == IDTOI2){
+            leftFront.setPower(0.5);
+            rightFront.setPower(-0.5);
+            rightRear.setPower(0.5);
+            leftRear.setPower(-0.5);
+            sleep(500);
+
             leftFront.setPower(0.3);
             rightFront.setPower(0.3);
             rightRear.setPower(0.3);
             leftRear.setPower(0.3);
-            sleep(1500);
+            sleep(2000);
         }
         else {
-            leftFront.setPower(-0.3);
-            rightFront.setPower(0.3);
-            rightRear.setPower(-0.3);
-            leftRear.setPower(0.3);
-            sleep(2500);
-            leftFront.setPower(0.3);
-            rightFront.setPower(0.3);
-            rightRear.setPower(0.3);
-            leftRear.setPower(0.3);
-            sleep(1500);
+            leftFront.setPower(0.5);
+            rightFront.setPower(-0.5);
+            rightRear.setPower(0.5);
+            leftRear.setPower(-0.5);
+            sleep(2000);
+
+            leftFront.setPower(0);
+            rightFront.setPower(0);
+            rightRear.setPower(0);
+            leftRear.setPower(0);
+            sleep(200);
+
+            leftFront.setPower(0.5);
+            rightFront.setPower(0.5);
+            rightRear.setPower(0.5);
+            leftRear.setPower(0.5);
+            sleep(900);
+
+            /*
+            leftFront.setPower(0.2);
+            rightFront.setPower(0.2);
+            rightRear.setPower(0.2);
+            leftRear.setPower(0.2);
+            sleep(7000);
+
+             */
         }
         /*
          * Insert your autonomous code here, probably using the tag pose to decide your configuration.

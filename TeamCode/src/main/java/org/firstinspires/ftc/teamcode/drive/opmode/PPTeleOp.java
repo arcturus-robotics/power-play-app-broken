@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.drive.ArcturusDrive;
+import org.firstinspires.ftc.teamcode.drive.ArcturusDriveRR;
 
 import java.util.ArrayList;
 
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 @TeleOp(group = "drive")
 public class PPTeleOp extends OpMode {
     // variables are set
-    private ArcturusDrive drive;
+    private ArcturusDriveRR drive;
     private DcMotorEx duckwheel, lift, lf, rf, rr, lr;
     private Servo claw;
     double duckspeed = 0.55;
@@ -58,7 +58,7 @@ public class PPTeleOp extends OpMode {
     @Override
 
     public void init() {
-        drive = new ArcturusDrive(hardwareMap);
+        drive = new ArcturusDriveRR(hardwareMap);
         //
         //  noodle = hardwareMap.get(DcMotorEx.class, "intake");
         duckwheel = hardwareMap.get(DcMotorEx.class, "front");
