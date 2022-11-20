@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.drive.ArcturusDrive;
+import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
 
 @Autonomous(group = "drive")
 public class OneConeAutoL extends LinearOpMode {
@@ -15,7 +15,7 @@ public class OneConeAutoL extends LinearOpMode {
 
     private static final Pose2d ORIGIN = new Pose2d(-63.0, -56.0, 0.0);
 
-    private ArcturusDrive drive;
+    private ArcturusDriveNoRR drive;
     private double number;
     private DcMotorEx lift,leftFront, leftRear, rightRear, rightFront;
     private Servo claw;
@@ -27,7 +27,7 @@ public class OneConeAutoL extends LinearOpMode {
     public void runOpMode() {
         number = 0.5;
         // Dri
-        drive = new ArcturusDrive(hardwareMap);
+        drive = new ArcturusDriveNoRR(hardwareMap);
         //
         // intaketilt = hardwareMap.get(Servo.class, "ringpusher");
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
@@ -49,44 +49,37 @@ public class OneConeAutoL extends LinearOpMode {
         //intaketilt.setPosition(0.58);
 
         //moving right to our substation
-        drive.setMotorPowers(0.1,-0.1,0.1,-0.1);
-        sleep(1750);
+        drive.goingRight(1750, 0.1);
 
         //moving forward
-        drive.setMotorPowers(0.1,0.1,0.1,0.1);
-        sleep(1750);
+        drive.goingForward(1750, 0.1);
 
         //moving a small bit right
-        drive.setMotorPowers(0.1,-0.1,0.1,-0.1);
-        sleep(750);
+        drive.goingRight(750, 0.1);
 
         //lift  up
         lift.setTargetPosition(4400);
         lift.setPower(0.5);
 
         //go forward to score
-        drive.setMotorPowers(0.1,0.1,0.1,0.1);
-        sleep(1000);
+        drive.goingForward(1000, 0.1);
 
         //open claw
         claw.setPosition(0.65);
         sleep(1000);
 
         //go backward
-        drive.setMotorPowers(-0.1,-0.1,-0.1,-0.1);
-        sleep (1000);
+        drive.goingBackward(1000, 0.1);
 
         //lift down
         lift.setTargetPosition(0);
         lift.setPower(0.5);
 
         //moving a small bit left
-        drive.setMotorPowers(-0.1, 0.1, -0.1, 0.1);
-        sleep (1000);
+        drive.goingLeft(1000, 0.1);
 
         //go backward into substation
-        drive.setMotorPowers(-0.1, -0.1, -0.1, -0.1);
-        sleep(3000);
+        drive.goingBackward(3000, 0.1);
 
         }
 

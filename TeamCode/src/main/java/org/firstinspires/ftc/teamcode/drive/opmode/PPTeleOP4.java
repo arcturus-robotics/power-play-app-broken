@@ -11,6 +11,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
+import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
+
 
 import java.util.ArrayList;
 
@@ -20,8 +22,9 @@ import java.util.ArrayList;
  * but it will only use one of them.
  */
 @TeleOp(group = "drive")
-public class PPTeleOP2 extends OpMode {
+public class PPTeleOP4 extends OpMode {
     // variables are set
+    private ArcturusDriveNoRR drive;
     private DcMotorEx duckwheel;
     private DcMotorEx lift;
     private DcMotorEx lf;
@@ -47,7 +50,7 @@ public class PPTeleOP2 extends OpMode {
     int low = 2000;
     int ground = 0;
     double WorkingMotorMax = 0.6825;
-    double MotorMaxSpeed = 0.8;
+    double MotorMaxSpeed = 0.5;
     int targetpos = 0;
     //double rightfrontpos,leftfrontpos,leftbackpos,rightbackpos;
 
@@ -57,15 +60,12 @@ public class PPTeleOP2 extends OpMode {
     @Override
 
     public void init() {
-        lf = hardwareMap.get(DcMotorEx.class, "leftFront");
-        lr = hardwareMap.get(DcMotorEx.class, "leftRear");
-        rr = hardwareMap.get(DcMotorEx.class, "rightRear");
-        rf = hardwareMap.get(DcMotorEx.class, "rightFront");
+        drive = new ArcturusDriveNoRR(hardwareMap);
 
         //  noodle = hardwareMap.get(DcMotorEx.class, "intake");
         duckwheel = hardwareMap.get(DcMotorEx.class, "front");
 
-        lift =  hardwareMap.get(DcMotorEx.class, "leftShooter");
+        lift = hardwareMap.get(DcMotorEx.class, "leftShooter");
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //noodle = hardwareMap.get(DcMotorEx.class,"rightShooter");
@@ -90,20 +90,12 @@ public class PPTeleOP2 extends OpMode {
     @Override
     public void loop() {
 
-        double leftFront = -Range.clip(gamepad2.left_stick_y + gamepad2.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
-        double leftRear = -Range.clip(gamepad2.left_stick_y - gamepad2.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
-        double rightRear = -Range.clip(gamepad2.right_stick_y + gamepad2.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
-        double rightFront = -Range.clip(gamepad2.right_stick_y - gamepad2.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
-//        double leftFront = -Range.clip(gamepad2.left_stick_y + gamepad2.left_stick_x, -drivespeed, drivespeed);
-//        double leftRear = -Range.clip(gamepad2.left_stick_y - gamepad2.right_stick_x, -drivespeed, drivespeed);
-//        double rightRear = -Range.clip(gamepad2.right_stick_y + gamepad2.left_stick_x, -drivespeed, drivespeed);
-//        double rightFront = -Range.clip(gamepad2.right_stick_y - gamepad2.right_stick_x, -drivespeed, drivespeed);
+        double leftFront = -Range.clip(gamepad2.left_stick_y - gamepad2.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
+        double leftRear = -Range.clip(gamepad2.left_stick_y + gamepad2.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
+        double rightRear = -Range.clip(gamepad2.right_stick_y - gamepad2.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
+        double rightFront = -Range.clip(gamepad2.right_stick_y + gamepad2.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
 
-        //drive.setMotorPowers(leftFront*drivespeed, leftRear*drivespeed, rightRear*drivespeed, rightFront*drivespeed);
-        lf.setPower(leftFront);
-        lr.setPower(leftRear);
-        rr.setPower(rightRear);
-        rf.setPower(rightFront);
+        drive.setMotorPowers(leftFront, leftRear, rightFront, rightRear);
 
         clawpos = claw.getPosition();
         liftpos = lift.getCurrentPosition();
@@ -140,9 +132,6 @@ public class PPTeleOP2 extends OpMode {
         */
 
 
-
-
-
         // claw set and lifted to a position
         if (PID) {
             if (targetpos > maxheight) {
@@ -155,30 +144,25 @@ public class PPTeleOP2 extends OpMode {
             lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             if (upsies) {
                 lift.setPower(1);
-            }
-            else {
+            } else {
                 lift.setPower(0.5);
             }
         }
 
 
-        if (gamepad2.dpad_up)
-        {
+        if (gamepad2.dpad_up) {
             PID = false;
             lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             lift.setPower(1);
 
             //  noodle.setPower(-1);
-        }
-        else if (gamepad2.dpad_down) {
+        } else if (gamepad2.dpad_down) {
             PID = false;
             lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             lift.setPower(-1);
 
             //noodle.setPower(1);
-        }
-        else if (!PID)
-        {
+        } else if (!PID) {
             lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             lift.setPower(0);
             //          lift.setTargetPosition(0);
@@ -188,35 +172,28 @@ public class PPTeleOP2 extends OpMode {
         if (gamepad2.right_trigger != 0) {
             targetpos += 20;
             upsies = true;
-        }
-
-
-        else if (gamepad2.left_trigger != 0) {
+        } else if (gamepad2.left_trigger != 0) {
             targetpos -= 20;
             upsies = true;
         }
 
 
-
         //the following 4 if/else if statements tell the robot which stage of the lift
         //uses the right of the second controller with y referring to up, x referring to medium, a referring to down, and b referring to default
         //the preference goes y,x,a, and b from most powerful command to least powerful command
-        if (gamepad2.a) {targetpos = low;
+        if (gamepad2.a) {
+            targetpos = low;
             upsies = true;
             PID = true;
-        }
-
-        else if (gamepad2.x) {targetpos = medium;
+        } else if (gamepad2.x) {
+            targetpos = medium;
             upsies = true;
             PID = true;
-        }
-
-        else if (gamepad2.y) {targetpos = high;
+        } else if (gamepad2.y) {
+            targetpos = high;
             upsies = true;
             PID = true;
-        }
-
-        else if (gamepad2.b) {
+        } else if (gamepad2.b) {
             upsies = false;
             //claw.setPosition(1);
             targetpos = ground;
@@ -224,11 +201,10 @@ public class PPTeleOP2 extends OpMode {
         }
 
         if (gamepad2.right_bumper) {
-            claw.setPosition( Range.clip(clawpos  + 0.02, 0.7, 0.9) );
+            claw.setPosition(Range.clip(clawpos + 0.02, 0.7, 0.9));
             // intaketilt.setPosition(0);
-        }
-        else if (gamepad2.left_bumper) {
-            claw.setPosition( Range.clip(clawpos  - 0.02, 0.7, 0.9) );
+        } else if (gamepad2.left_bumper) {
+            claw.setPosition(Range.clip(clawpos - 0.02, 0.7, 0.9));
             // intaketilt.setPcosition(1);
         }
         /*
@@ -236,7 +212,7 @@ public class PPTeleOP2 extends OpMode {
             //intaketilt.setPower(0);5
         }*/
 
-        if(gamepad2.share) {
+        if (gamepad2.share) {
             PID = false;
             lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
@@ -277,4 +253,5 @@ public class PPTeleOP2 extends OpMode {
         booleanIncrement += 1;
         return output;
     }
+
 }
