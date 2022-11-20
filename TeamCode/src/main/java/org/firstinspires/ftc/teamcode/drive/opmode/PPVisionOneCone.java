@@ -18,7 +18,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 import java.util.ArrayList;
 
 @Autonomous
-public class PPVisionAuto extends LinearOpMode
+public class PPVisionOneCone extends LinearOpMode
 {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -59,7 +59,6 @@ public class PPVisionAuto extends LinearOpMode
 
         claw = hardwareMap.get(Servo.class, "claw");
         claw.setPosition(0.9);
-
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
@@ -149,16 +148,14 @@ public class PPVisionAuto extends LinearOpMode
             sleep(20);
         }
 
+        lift.setTargetPosition(500);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
         /*
          * The START command just came in: now work off the latest snapshot acquired
          * during the init loop.
          */
-        lift.setTargetPosition(350);
-        lift.setPower(0.8);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        sleep(2000);
 
         /* Update the telemetry */
         if(tagOfInterest != null)
@@ -193,59 +190,49 @@ public class PPVisionAuto extends LinearOpMode
         //else
         //
         if(tagOfInterest.id == IDTOI1){
-            leftFront.setPower(0.5);
-            rightFront.setPower(-0.5);
-            rightRear.setPower(0.5);
-            leftRear.setPower(-0.5);
-            sleep(1000);
-            //alex original number was 1300
-
-            leftFront.setPower(0);
-            rightFront.setPower(0);
-            rightRear.setPower(0);
-            leftRear.setPower(0);
-            sleep(200);
-
-            leftFront.setPower(0.5);
-            rightFront.setPower(0.5);
-            rightRear.setPower(0.5);
-            leftRear.setPower(0.5);
-            sleep(1700*3/5);
+            //first  go to conescoring poisition
+            leftFront.setPower(0.3);
+            rightFront.setPower(-0.3);
+            rightRear.setPower(0.3);
+            leftRear.setPower(-0.3);
+            sleep(2000);
+            leftFront.setPower(0.3);
+            rightFront.setPower(0.3);
+            rightRear.setPower(0.3);
+            leftRear.setPower(0.3);
+            sleep(1700);
+            //at scoring position, raise lift and score cone
+            lift.setTargetPosition(4400);
+            lift.setPower(1);
+            leftFront.setPower(0.3);
+            rightFront.setPower(-0.3);
+            rightRear.setPower(0.3);
+            leftRear.setPower(-0.3);
+            sleep(2000);
+            leftFront.setPower(0.3);
+            rightFront.setPower(0.3);
+            rightRear.setPower(0.3);
+            leftRear.setPower(0.3);
+            sleep(1700);
         }
         else if(tagOfInterest.id == IDTOI2){
             leftFront.setPower(0.3);
             rightFront.setPower(0.3);
             rightRear.setPower(0.3);
             leftRear.setPower(0.3);
-            sleep(2000);
+            sleep(1500);
         }
         else {
-            leftFront.setPower(-0.5);
-            rightFront.setPower(0.5);
-            rightRear.setPower(-0.5);
-            leftRear.setPower(0.5);
-            sleep(1300);
-
-            leftFront.setPower(0);
-            rightFront.setPower(0);
-            rightRear.setPower(0);
-            leftRear.setPower(0);
-            sleep(200);
-
-            leftFront.setPower(0.5);
-            rightFront.setPower(0.5);
-            rightRear.setPower(0.5);
-            leftRear.setPower(0.5);
-            sleep(1000);
-
-            /*
-            leftFront.setPower(0.2);
-            rightFront.setPower(0.2);
-            rightRear.setPower(0.2);
-            leftRear.setPower(0.2);
-            sleep(7000);
-
-             */
+            leftFront.setPower(-0.3);
+            rightFront.setPower(0.3);
+            rightRear.setPower(-0.3);
+            leftRear.setPower(0.3);
+            sleep(2500);
+            leftFront.setPower(0.3);
+            rightFront.setPower(0.3);
+            rightRear.setPower(0.3);
+            leftRear.setPower(0.3);
+            sleep(1500);
         }
         /*
          * Insert your autonomous code here, probably using the tag pose to decide your configuration.
