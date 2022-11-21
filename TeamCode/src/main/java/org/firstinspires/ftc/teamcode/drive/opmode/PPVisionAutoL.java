@@ -194,7 +194,7 @@ public class PPVisionAutoL extends LinearOpMode
             rightFront.setPower(0.5);
             rightRear.setPower(-0.5);
             leftRear.setPower(0.5);
-            sleep(1500);
+            sleep(900);
             //1200 right, 800 left
 
             leftFront.setPower(0);
@@ -214,7 +214,7 @@ public class PPVisionAutoL extends LinearOpMode
             rightFront.setPower(-0.5);
             rightRear.setPower(0.5);
             leftRear.setPower(-0.5);
-            sleep(500);
+            sleep(300);
 
             leftFront.setPower(0.3);
             rightFront.setPower(0.3);
@@ -227,7 +227,7 @@ public class PPVisionAutoL extends LinearOpMode
             rightFront.setPower(-0.5);
             rightRear.setPower(0.5);
             leftRear.setPower(-0.5);
-            sleep(2000);
+            sleep(1200);
 
             leftFront.setPower(0);
             rightFront.setPower(0);

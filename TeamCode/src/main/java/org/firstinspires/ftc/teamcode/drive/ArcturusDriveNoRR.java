@@ -61,5 +61,14 @@ public class ArcturusDriveNoRR {
         sleep(time);
         setMotorPowers(0, 0, 0, 0);
     }
-
+    public void turnLeft (long time, double speed) {
+        setMotorPowers(-speed, -speed, speed, speed);
+        sleep(time);
+        setMotorPowers(0,0,0,0);
+    }
+    public void turnRight (long time, double speed) {
+        setMotorPowers(speed, speed, -speed, -speed);
+        sleep(time);
+        setMotorPowers(0,0,0,0);
+    }
 }

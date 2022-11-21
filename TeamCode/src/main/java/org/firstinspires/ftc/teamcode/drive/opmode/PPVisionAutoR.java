@@ -194,7 +194,7 @@ public class PPVisionAutoR extends LinearOpMode
             rightFront.setPower(0.5);
             rightRear.setPower(-0.5);
             leftRear.setPower(0.5);
-            sleep(1200);
+            sleep(1000);
             //1200 right, 800 left
 
             leftFront.setPower(0);

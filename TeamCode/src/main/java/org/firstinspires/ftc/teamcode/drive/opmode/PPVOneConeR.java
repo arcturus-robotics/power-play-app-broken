@@ -11,12 +11,15 @@ import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
+
 
 import java.util.ArrayList;
 
 @Autonomous
 public class PPVOneConeR extends LinearOpMode
 {
+    private ArcturusDriveNoRR drive;
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
@@ -48,10 +51,7 @@ public class PPVOneConeR extends LinearOpMode
     {
         //
         // intaketilt = hardwareMap.get(Servo.class, "ringpusher");
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        drive = new ArcturusDriveNoRR(hardwareMap);
         lift =  hardwareMap.get(DcMotorEx.class, "leftShooter");
 
         claw = hardwareMap.get(Servo.class, "claw");
@@ -175,70 +175,34 @@ public class PPVOneConeR extends LinearOpMode
             leftRear.setPower(0.3);
             sleep(1500);
         }
-        //scorecone go from right to left
-        leftFront.setPower(0.2);
-        rightFront.setPower(-0.2);
-        rightRear.setPower(0.2);
-        leftRear.setPower(-0.2);
-        sleep(2000);
+        //START SCORING CONE
+        drive.goingLeft(1000*5/3,0.3);
+        sleep(1000);
 
+        drive.goingForward((800*5/3)+300,0.3);
+        sleep(1000);
 
-        leftFront.setPower(0);
-        rightFront.setPower(0);
-        rightRear.setPower(0);
-        leftRear.setPower(0);
-        sleep(200);
-
-        leftFront.setPower(0.5);
-        rightFront.setPower(0.5);
-        rightRear.setPower(0.5);
-        leftRear.setPower(0.5);
-        sleep(800);
-
-        leftFront.setPower(0.5);
-        rightFront.setPower(-0.5);
-        rightRear.setPower(0.5);
-        leftRear.setPower(-0.5);
-        sleep(800);
+        drive.goingLeft((600*5/3)+275,0.3);
+        sleep(1000);
 
         lift.setTargetPosition(5100);
-        lift.setPower(1);
+        lift.setPower(1.0);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        sleep(3000);
+
+        drive.goingForward((175*5/3)+200,0.3);
         sleep(1000);
 
-        leftFront.setPower(0.1);
-        rightFront.setPower(0.1);
-        rightRear.setPower(0.1);
-        leftRear.setPower(0.1);
+        claw.setPosition(0.7);
         sleep(1000);
 
-        lift.setTargetPosition(4500);
-        lift.setPower(0.2);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        sleep(1000);
-
-        claw.setPosition(0.9);
-
-        lift.setTargetPosition(5100);
-        lift.setPower(1);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        leftFront.setPower(-0.1);
-        rightFront.setPower(-0.1);
-        rightRear.setPower(-0.1);
-        leftRear.setPower(-0.1);
-        sleep(1000);
+        drive.goingBackward((175*5/3)+200,0.3);
 
         lift.setTargetPosition(0);
         lift.setPower(1);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        sleep(1000);
+        sleep(3000);
 
-        leftFront.setPower(0.3);
-        rightFront.setPower(-0.3);
-        rightRear.setPower(-0.3);
-        leftRear.setPower(0.3);
-        sleep(1000);
         /* Actually do something useful */
         //if(tagOfInterest == null){
         // leftFront.setPower(0.1);
@@ -254,25 +218,19 @@ public class PPVOneConeR extends LinearOpMode
         //else
         //
         if(tagOfInterest.id == IDTOI1) {
-            leftFront.setPower(0.3);
-            rightFront.setPower(0.3);
-            rightRear.setPower(0.3);
-            leftRear.setPower(0.3);
-            sleep(3000);
+            drive.turnRight(1400,0.3);
+            sleep(1000);
+            drive.goingForward(2000,0.5);
         }
         else if(tagOfInterest.id == IDTOI2){
-            leftFront.setPower(0.3);
-            rightFront.setPower(0.3);
-            rightRear.setPower(0.3);
-            leftRear.setPower(0.3);
-            sleep(5000);
+            drive.turnRight(1400,0.3);
+            sleep(1000);
+            drive.goingForward(1100,0.5);
         }
         else {
-            leftFront.setPower(0.3);
-            rightFront.setPower(0.3);
-            rightRear.setPower(0.3);
-            leftRear.setPower(0.3);
-            sleep(7000);
+            drive.turnRight(1400,0.3);
+            sleep(1000);
+            drive.goingForward(350,0.5);
 
             /*
             leftFront.setPower(0.2);
