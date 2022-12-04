@@ -53,6 +53,9 @@ public class PPVOneConeL extends LinearOpMode
         // intaketilt = hardwareMap.get(Servo.class, "ringpusher");
         drive = new ArcturusDriveNoRR(hardwareMap);
         lift =  hardwareMap.get(DcMotorEx.class, "leftShooter");
+        lift.setTargetPosition(80);
+        lift.setPower(1);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         claw = hardwareMap.get(Servo.class, "claw");
         claw.setPosition(0.9);
@@ -153,7 +156,7 @@ public class PPVOneConeL extends LinearOpMode
          * The START command just came in: now work off the latest snapshot acquired
          * during the init loop.
          */
-        lift.setTargetPosition(350);
+        lift.setTargetPosition(80);
         lift.setPower(0.8);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         sleep(2000);
@@ -176,12 +179,15 @@ public class PPVOneConeL extends LinearOpMode
             sleep(1500);
         }
         //START SCORING CONE
-        drive.goingRight((1200*5/3)+500,0.3);
+        drive.goingRight((1200*5/3)+400,0.3);
+        sleep(1000);
+
+        drive.goingBackward(200,0.5);
         sleep(1000);
 
         drive.goingForward((800*5/3)+300,0.3);
         sleep(1000);
-        drive.goingRight((600*5/3)+275,0.3);
+        drive.goingRight((600*5/3)+300,0.3);
         sleep(1000);
 
         lift.setTargetPosition(5100);
@@ -189,15 +195,20 @@ public class PPVOneConeL extends LinearOpMode
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         sleep(3000);
 
-        drive.goingForward((175*5/3)+200,0.3);
+        drive.goingForward((175*5/3)+25,0.3);
         sleep(1000);
+
+        lift.setTargetPosition(3500);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setPower(0.8);
+        sleep(3000);
 
         claw.setPosition(0.7);
         sleep(1000);
 
-        drive.goingBackward((175*5/3)+200,0.3);
+        drive.goingBackward((175*5/3)+25,0.3);
 
-        lift.setTargetPosition(0);
+        lift.setTargetPosition(80);
         lift.setPower(1);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         sleep(3000);
@@ -216,19 +227,19 @@ public class PPVOneConeL extends LinearOpMode
         //else
         //
         if(tagOfInterest.id == IDTOI1) {
-            drive.turnLeft(1400,0.3);
+            drive.turnLeft(1300,0.3);
             sleep(1000);
             drive.goingForward(2000,0.5);
         }
         else if(tagOfInterest.id == IDTOI2){
-            drive.turnLeft(1400,0.3);
+            drive.turnLeft(1300,0.3);
             sleep(1000);
             drive.goingForward(1100,0.5);
         }
         else {
-            drive.turnLeft(1400,0.3);
+            drive.turnLeft(1300,0.3);
             sleep(1000);
-            drive.goingForward(350,0.5);
+            drive.goingForward(300,0.5);
         }
         /*
          * Insert your autonomous code here, probably using the tag pose to decide your configuration.

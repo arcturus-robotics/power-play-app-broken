@@ -32,11 +32,12 @@ public class PPTele2Control extends OpMode {
     private DcMotorEx rr;
     private DcMotorEx lr;
     private Servo claw;
+    long delay = 0;
 
     double clawpos;
     double liftpos;
 
-    boolean PID = false;
+    boolean PID = true;
     boolean upsies;
 
 
@@ -48,10 +49,11 @@ public class PPTele2Control extends OpMode {
     int high = 4400;
     int medium = 3200;
     int low = 2000;
-    int ground = 0;
+    int ground = 80;
+    int selectedpos = 0;
     double WorkingMotorMax = 0.6825;
     double MotorMaxSpeed = 0.5;
-    int targetpos = 0;
+    int targetpos = ground;
     //double rightfrontpos,leftfrontpos,leftbackpos,rightbackpos;
 
     ArrayList<Boolean> boolArray = new ArrayList<Boolean>();
@@ -67,11 +69,14 @@ public class PPTele2Control extends OpMode {
 
         lift = hardwareMap.get(DcMotorEx.class, "leftShooter");
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
+        lift.setTargetPosition(targetpos);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setPower(1);
         //noodle = hardwareMap.get(DcMotorEx.class,"rightShooter");
 
         claw = hardwareMap.get(Servo.class, "claw");
         claw.setPosition(0.9);
+
 
         //  lf = hardwareMap.get(DcMotorEx.class, "leftFront");
         //rr = hardwareMap.get(DcMotorEx.class, "rightRear");
@@ -143,13 +148,18 @@ public class PPTele2Control extends OpMode {
             lift.setTargetPosition(targetpos);
             lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             if (upsies) {
-                claw.setPosition(0.9);
                 lift.setPower(1);
             } else {
-                lift.setPower(0.5);
+                lift.setPower(1);
             }
         }
-
+        if (delay != 0) {
+            if (System.nanoTime() > 2e+8 + delay) {
+                delay = 0;
+                PID=true;
+                targetpos=selectedpos;
+            }
+        }
 
         if (gamepad2.dpad_up) {
             PID = false;
@@ -172,10 +182,10 @@ public class PPTele2Control extends OpMode {
         }
 
         if (gamepad2.right_trigger != 0) {
-            targetpos += 20;
+            targetpos -= 20;
             upsies = true;
         } else if (gamepad2.left_trigger != 0) {
-            targetpos -= 20;
+            targetpos += 20;
             upsies = true;
         }
 
@@ -184,17 +194,20 @@ public class PPTele2Control extends OpMode {
         //uses the right of the second controller with y referring to up, x referring to medium, a referring to down, and b referring to default
         //the preference goes y,x,a, and b from most powerful command to least powerful command
         if (gamepad2.a) {
-            targetpos = low;
+            selectedpos = low;
             upsies = true;
-            PID = true;
+            delay=System.nanoTime();
+            claw.setPosition(0.9);
         } else if (gamepad2.x) {
-            targetpos = medium;
+            selectedpos=medium;
             upsies = true;
-            PID = true;
+            delay=System.nanoTime();
+            claw.setPosition(0.9);
         } else if (gamepad2.y) {
-            targetpos = high;
+            selectedpos=high;
             upsies = true;
-            PID = true;
+            delay=System.nanoTime();
+            claw.setPosition(0.9);
         } else if (gamepad2.b) {
             upsies = false;
             //claw.setPosition(1);

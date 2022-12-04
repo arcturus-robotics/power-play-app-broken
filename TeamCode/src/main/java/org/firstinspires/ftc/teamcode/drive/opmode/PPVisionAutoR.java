@@ -12,11 +12,14 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
+import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
+
 import java.util.ArrayList;
 
 @Autonomous
 public class PPVisionAutoR extends LinearOpMode
 {
+    private ArcturusDriveNoRR drive;
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
@@ -48,11 +51,11 @@ public class PPVisionAutoR extends LinearOpMode
     {
         //
         // intaketilt = hardwareMap.get(Servo.class, "ringpusher");
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        drive = new ArcturusDriveNoRR(hardwareMap);
         lift =  hardwareMap.get(DcMotorEx.class, "leftShooter");
+        lift.setTargetPosition(80);
+        lift.setPower(1);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         claw = hardwareMap.get(Servo.class, "claw");
         claw.setPosition(0.9);
@@ -147,15 +150,13 @@ public class PPVisionAutoR extends LinearOpMode
         }
 
 
-
+        lift.setTargetPosition(200);
+        lift.setPower(1);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         /*
          * The START command just came in: now work off the latest snapshot acquired
          * during the init loop.
          */
-        lift.setTargetPosition(350);
-        lift.setPower(0.8);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        sleep(2000);
 
         /* Update the telemetry */
         if(tagOfInterest != null)
@@ -190,50 +191,19 @@ public class PPVisionAutoR extends LinearOpMode
         //else
         //
         if(tagOfInterest.id == IDTOI1){
-            leftFront.setPower(-0.5);
-            rightFront.setPower(0.5);
-            rightRear.setPower(-0.5);
-            leftRear.setPower(0.5);
-            sleep(1000);
-            //1200 right, 800 left
-
-            leftFront.setPower(0);
-            rightFront.setPower(0);
-            rightRear.setPower(0);
-            leftRear.setPower(0);
-            sleep(200);
-
-            leftFront.setPower(0.5);
-            rightFront.setPower(0.5);
-            rightRear.setPower(0.5);
-            leftRear.setPower(0.5);
-            sleep(1700*3/5);
+            drive.goingLeft(1000,0.5);
+            drive.goingForward(200,0);
+            drive.goingBackward(700,0.5);
+            drive.goingForward(200,0);
+            drive.goingForward(1700*3/5,0.5);
         }
         else if(tagOfInterest.id == IDTOI2){
-            leftFront.setPower(0.3);
-            rightFront.setPower(0.3);
-            rightRear.setPower(0.3);
-            leftRear.setPower(0.3);
-            sleep(2000);
+            drive.goingForward(2000,0.3);
         }
         else {
-            leftFront.setPower(0.5);
-            rightFront.setPower(-0.5);
-            rightRear.setPower(0.5);
-            leftRear.setPower(-0.5);
-            sleep(1000);
-
-            leftFront.setPower(0);
-            rightFront.setPower(0);
-            rightRear.setPower(0);
-            leftRear.setPower(0);
-            sleep(200);
-
-            leftFront.setPower(0.5);
-            rightFront.setPower(0.5);
-            rightRear.setPower(0.5);
-            leftRear.setPower(0.5);
-            sleep(900);
+            drive.goingRight(1000,0.5);
+            drive.goingForward(200,0);
+            drive.goingForward(900,0.5);
 
             /*
             leftFront.setPower(0.2);
@@ -244,6 +214,8 @@ public class PPVisionAutoR extends LinearOpMode
 
              */
         }
+        drive.goingForward(500,0);
+        claw.setPosition(0.7);
         /*
          * Insert your autonomous code here, probably using the tag pose to decide your configuration.
          */
