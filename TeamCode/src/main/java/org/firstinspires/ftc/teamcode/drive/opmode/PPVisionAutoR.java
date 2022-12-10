@@ -46,6 +46,8 @@ public class PPVisionAutoR extends LinearOpMode
 
     AprilTagDetection tagOfInterest = null;
 
+    boolean tagNotDetected = false;
+
     @Override
     public void runOpMode()
     {
@@ -169,11 +171,8 @@ public class PPVisionAutoR extends LinearOpMode
         {
             telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
             telemetry.update();
-            leftFront.setPower(0.3);
-            rightFront.setPower(0.3);
-            rightRear.setPower(0.3);
-            leftRear.setPower(0.3);
-            sleep(1500);
+            boolean tagNotDetected = true;
+            drive.goingForward(1500, 0.3);
         }
 
         /* Actually do something useful */
@@ -190,7 +189,11 @@ public class PPVisionAutoR extends LinearOpMode
         //}
         //else
         //
-        if(tagOfInterest.id == IDTOI1){
+        if (tagNotDetected){
+
+        }
+
+        else if(tagOfInterest.id == IDTOI1){
             drive.goingLeft(1000,0.5);
             drive.goingForward(200,0);
             drive.goingBackward(700,0.5);

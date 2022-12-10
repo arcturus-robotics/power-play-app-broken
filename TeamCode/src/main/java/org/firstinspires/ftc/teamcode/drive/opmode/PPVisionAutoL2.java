@@ -167,11 +167,12 @@ public class PPVisionAutoL2 extends LinearOpMode
         }
         else
         {
-            telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
+            telemetry.addLine("No tag snapshot available, it was never sighted during the init loop");
             telemetry.update();
 
-            drive.goingForward(1500, 0.3);
-
+            drive.goingRight(300,0.5);
+            drive.goingForward(200,0);
+            drive.goingForward(2000,0.3);
         }
 
         /* Actually do something useful */
