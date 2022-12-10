@@ -6,80 +6,90 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.openftc.apriltag.AprilTagDetection;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(group = "drive")
 public class RROneConeAuto extends LinearOpMode {
-    private ElapsedTime     runtime = new ElapsedTime();
 
-    private static final Pose2d ORIGIN = new Pose2d(-63.0, -56.0, 0.0);
-
-    private SampleMecanumDrive drive;
-    private double number;
-    private DcMotorEx lift,leftFront, leftRear, rightRear, rightFront;
+    private DcMotorEx lift;
     private Servo claw;
-    private long freightboxdelay;
-    double WorkingMotorMax = 0.6825;
-    // private ArcturusVision vision;
 
     @Override
     public void runOpMode() {
-        number = 0.5;
-        // Drive
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        //
-        // intaketilt = hardwareMap.get(Servo.class, "ringpusher");
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        lift = hardwareMap.get(DcMotorEx.class, "leftShooter");
+        claw = claw = hardwareMap.get(Servo.class, "claw");
 
-        claw = hardwareMap.get(Servo.class, "claw");
-        claw.setPosition(0.9);
+        Trajectory myTrajectory1 = drive.trajectoryBuilder(new Pose2d())
+                .strafeRight(10)
+                .forward(10)
+                .strafeRight(5)
+                .forward(5)
+                .build();
 
-        //leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Trajectory myTrajectory2 = drive.trajectoryBuilder(new Pose2d())
+                .back(5)
+                .strafeLeft(36)
+                .forward(5)
+                .build();
 
-        telemetry.addData("sdjflkasfjsdlaf", "press play or you have 5 seconds to live");
-        telemetry.update();
+        Trajectory myTrajectory3 = drive.trajectoryBuilder(new Pose2d())
+                .back(5)
+                .strafeRight(36)
+                .forward(5)
+                .build();
+
+        Trajectory myTrajectory4 = drive.trajectoryBuilder(new Pose2d())
+                .back(5)
+                .strafeLeft(5)
+                .back(15)
+                .build();
+
         waitForStart();
 
+        if(isStopRequested()) return;
 
-        //intaketilt.setPosition(0.58);
+        claw.setPosition(0.9);
+        sleep(2000);
 
-        //moving right to our substation
+        lift.setTargetPosition(5100);
+        lift.setPower(1.0);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        drive.followTrajectory(myTrajectory1);
 
-        //moving forward
+        lift.setTargetPosition(1687);
+        lift.setPower(0.8);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        drive.followTrajectory(myTrajectory2);
 
-        //moving a small bit right
+        claw.setPosition(0.9);
+        sleep(2000);
 
+        lift.setTargetPosition(5100);
+        lift.setPower(1);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        //lift  up
-        lift.setTargetPosition(4400);
-        lift.setPower(0.5);
+        drive.followTrajectory(myTrajectory3);
 
-        //go forward to score
+        claw.setPosition(0.7);
+        sleep(2000);
 
-
-        //open claw
-        claw.setPosition(0.65);
-        sleep(1000);
-
-        //go backward
-
-
-        //lift down
         lift.setTargetPosition(0);
-        lift.setPower(0.5);
+        lift.setPower(0.8);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        //moving a small bit left
-
-
-        //go backward into substation
+        drive.followTrajectory(myTrajectory4);
 
 
     }

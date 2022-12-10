@@ -100,7 +100,18 @@ public class PPTele2Control extends OpMode {
         double rightRear = -Range.clip(gamepad1.right_stick_y - gamepad1.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
         double rightFront = -Range.clip(gamepad1.right_stick_y + gamepad1.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
 
-        drive.setMotorPowers(leftFront, leftRear, rightFront, rightRear);
+        if (leftFront != 0 || leftRear != 0 || rightRear != 0 || rightFront != 0) {
+            drive.setMotorPowers(leftFront, leftRear, rightFront, rightRear);
+        } else {
+            if (gamepad1.right_trigger != 0) {
+                drive.setMotorPowers(MotorMaxSpeed, -MotorMaxSpeed, -MotorMaxSpeed, MotorMaxSpeed);
+            } else if (gamepad1.left_trigger != 0){
+                drive.setMotorPowers(-MotorMaxSpeed, MotorMaxSpeed, MotorMaxSpeed, -MotorMaxSpeed);
+            }
+             else{
+                 drive.setMotorPowers(0, 0, 0,0);
+             }
+        }
 
         clawpos = claw.getPosition();
         liftpos = lift.getCurrentPosition();
