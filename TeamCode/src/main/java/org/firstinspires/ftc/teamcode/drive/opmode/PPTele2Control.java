@@ -50,9 +50,11 @@ public class PPTele2Control extends OpMode {
     int medium = 3200;
     int low = 2000;
     int ground = 80;
+    int caldera = 750;
     int selectedpos = 0;
     double WorkingMotorMax = 0.6825;
-    double MotorMaxSpeed = 0.5;
+    // 0.5 normal
+    double MotorMaxSpeed = 0.65;
     int targetpos = ground;
     //double rightfrontpos,leftfrontpos,leftbackpos,rightbackpos;
 
@@ -224,7 +226,13 @@ public class PPTele2Control extends OpMode {
             //claw.setPosition(1);
             targetpos = ground;
             PID = true;
+
+        } else if (gamepad2.dpad_left){
+            upsies = false;
+            targetpos = caldera;
+            PID = true;
         }
+
 
         if (gamepad2.right_bumper) {
             claw.setPosition(Range.clip(clawpos + 0.02, 0.7, 0.9));

@@ -1,9 +1,14 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -12,22 +17,19 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
-
 
 import java.util.ArrayList;
 
-@Autonomous
-public class PPVisionAutoL extends LinearOpMode
-{
-    private ArcturusDriveNoRR drive;
+@Autonomous(group = "drive")
+public class RRVisionSixConeAutoL extends LinearOpMode {
+
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
     static final double FEET_PER_METER = 3.28084;
-    private DcMotorEx lift,leftFront, leftRear, rightRear, rightFront;
-    private Servo claw;
 
+    private DcMotorEx lift;
+    private Servo claw;
 
     // Lens intrinsics
     // UNITS ARE PIXELS
@@ -45,23 +47,17 @@ public class PPVisionAutoL extends LinearOpMode
     int IDTOI2 = 1;
     int IDTOI3 = 2;// Tag ID 18 from the 36h11 family
 
+    int scenario = 0;
+
     AprilTagDetection tagOfInterest = null;
 
     boolean tagNotDetected = false;
 
     @Override
-    public void runOpMode()
-    {
-        //
-        // intaketilt = hardwareMap.get(Servo.class, "ringpusher");
-        drive = new ArcturusDriveNoRR(hardwareMap);
-        lift =  hardwareMap.get(DcMotorEx.class, "leftShooter");
-        lift.setTargetPosition(80);
-        lift.setPower(1);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
+    public void runOpMode() {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        lift = hardwareMap.get(DcMotorEx.class, "leftShooter");
         claw = hardwareMap.get(Servo.class, "claw");
-        claw.setPosition(0.9);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -152,10 +148,10 @@ public class PPVisionAutoL extends LinearOpMode
             sleep(20);
         }
 
+
         lift.setTargetPosition(200);
         lift.setPower(1);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         /*
          * The START command just came in: now work off the latest snapshot acquired
          * during the init loop.
@@ -173,9 +169,8 @@ public class PPVisionAutoL extends LinearOpMode
             telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
             telemetry.update();
             boolean tagNotDetected = true;
-            drive.goingRight(300,0.5);
-            drive.goingForward(200,0);
-            drive.goingForward(2000,0.3);
+            int scenario = 0;
+            // drive.goingForward(1500, 0.3);
         }
 
         /* Actually do something useful */
@@ -195,26 +190,30 @@ public class PPVisionAutoL extends LinearOpMode
         if (tagNotDetected){
 
         }
+
         else if(tagOfInterest.id == IDTOI1){
-            drive.goingLeft(900,0.5);
-            drive.goingForward(200,0);
-            drive.goingBackward(700,0.5);
-            drive.goingForward(200, 0);
-            drive.goingForward(1250,0.5);
+            //   drive.goingLeft(1040,0.5);
+            //   drive.goingForward(200,0);
+            // drive.goingBackward(700,0.5);
+            // drive.goingForward(200,0);
+            //  drive.goingForward(1250,0.5);
+            int scenario = 1;
         }
         else if(tagOfInterest.id == IDTOI2){
-            drive.goingRight(125,0.5);
-            drive.goingForward(200,0);
-            drive.goingBackward(700,0.5);
-            drive.goingForward(200, 0);
-            drive.goingForward(2000,0.3);
-            }
+            // drive.goingRight(190, 0.3);
+            // drive.goingForward(200, 0);
+            // drive.goingBackward(200, 0.3);
+            // drive.goingForward(200, 0);
+            // drive.goingForward(2000,0.3);
+            int scenario = 2;
+        }
         else {
-            drive.goingRight(1050,0.5);
-            drive.goingForward(200,0);
-            drive.goingBackward(700,0.5);
-            drive.goingForward(200, 0);
-            drive.goingForward(900,0.5);
+            //drive.goingRight(1500,0.5);
+            //drive.goingForward(200,0);
+            //drive.goingBackward(700,0.5);
+            //drive.goingForward(200, 0);
+            //drive.goingForward(1150,0.5);
+            int scenario = 3;
 
             /*
             leftFront.setPower(0.2);
@@ -225,7 +224,7 @@ public class PPVisionAutoL extends LinearOpMode
 
              */
         }
-        drive.goingForward(500,0);
+        // drive.goingForward(500,0);
         claw.setPosition(0.7);
         /*
          * Insert your autonomous code here, probably using the tag pose to decide your configuration.
@@ -234,6 +233,185 @@ public class PPVisionAutoL extends LinearOpMode
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
         // while (opModeIsActive()) {sleep(20);}
+
+        Trajectory myTrajectory1 = drive.trajectoryBuilder(new Pose2d())
+                .strafeRight(10)
+                .forward(10)
+                .strafeRight(5)
+                .forward(5)
+                .build();
+
+        Trajectory myTrajectory2 = drive.trajectoryBuilder(new Pose2d())
+                .back(5)
+                .strafeLeft(36)
+                .forward(5)
+                .build();
+
+        Trajectory myTrajectory3 = drive.trajectoryBuilder(new Pose2d())
+                .back(5)
+                .strafeRight(36)
+                .forward(5)
+                .build();
+
+        Trajectory myTrajectory4 = drive.trajectoryBuilder(new Pose2d())
+                .back(5)
+                .strafeLeft(5)
+                .back(15)
+                .build();
+
+        Trajectory myTrajectory5 = drive.trajectoryBuilder(new Pose2d())
+                .strafeLeft(10)
+                .forward(10)
+                .build();
+
+        Trajectory myTrajectory6 = drive.trajectoryBuilder(new Pose2d())
+                .strafeLeft(20)
+                .forward(10)
+                .build();
+
+        Trajectory myTrajectory7 = drive.trajectoryBuilder(new Pose2d())
+                .strafeLeft(30)
+                .forward(10)
+                .build();
+
+
+        waitForStart();
+
+        if(isStopRequested()) return;
+
+        claw.setPosition(0.9);
+        sleep(2000);
+
+        lift.setTargetPosition(5100);
+        lift.setPower(1.0);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        drive.followTrajectory(myTrajectory1);
+// 1
+        lift.setTargetPosition(1687);
+        lift.setPower(0.8);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        drive.followTrajectory(myTrajectory2);
+
+        claw.setPosition(0.9);
+        sleep(2000);
+
+        lift.setTargetPosition(5100);
+        lift.setPower(1);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        drive.followTrajectory(myTrajectory3);
+
+//2
+
+        lift.setTargetPosition(1500);
+        lift.setPower(0.8);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        drive.followTrajectory(myTrajectory2);
+
+        claw.setPosition(0.9);
+        sleep(2000);
+
+        lift.setTargetPosition(5100);
+        lift.setPower(1);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        drive.followTrajectory(myTrajectory3);
+
+//3
+
+        lift.setTargetPosition(1300);
+        lift.setPower(0.8);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        drive.followTrajectory(myTrajectory2);
+
+        claw.setPosition(0.9);
+        sleep(2000);
+
+        lift.setTargetPosition(5100);
+        lift.setPower(1);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        drive.followTrajectory(myTrajectory3);
+
+//4
+
+        lift.setTargetPosition(1000);
+        lift.setPower(0.8);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        drive.followTrajectory(myTrajectory2);
+
+        claw.setPosition(0.9);
+        sleep(2000);
+
+        lift.setTargetPosition(5100);
+        lift.setPower(1);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        drive.followTrajectory(myTrajectory3);
+
+//5
+        lift.setTargetPosition(800);
+        lift.setPower(0.8);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        drive.followTrajectory(myTrajectory2);
+
+        claw.setPosition(0.9);
+        sleep(2000);
+
+        lift.setTargetPosition(5100);
+        lift.setPower(1);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        drive.followTrajectory(myTrajectory3);
+
+//6
+
+        lift.setTargetPosition(600);
+        lift.setPower(0.8);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        drive.followTrajectory(myTrajectory2);
+
+        claw.setPosition(0.9);
+        sleep(2000);
+
+        lift.setTargetPosition(5100);
+        lift.setPower(1);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        drive.followTrajectory(myTrajectory3);
+
+        claw.setPosition(0.7);
+        sleep(2000);
+
+        lift.setTargetPosition(0);
+        lift.setPower(0.8);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        drive.followTrajectory(myTrajectory4);
+
+        if (scenario == 0) {
+            drive.followTrajectory(myTrajectory5);
+        }
+
+        if (scenario == 1) {
+            drive.followTrajectory(myTrajectory6);
+        }
+
+        if (scenario == 2){
+            drive.followTrajectory(myTrajectory5);
+        }
+
+        if (scenario == 3){
+            drive.followTrajectory(myTrajectory7);
+        }
+
     }
 
     void tagToTelemetry(AprilTagDetection detection)
@@ -246,4 +424,6 @@ public class PPVisionAutoL extends LinearOpMode
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
+
 }
+

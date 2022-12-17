@@ -235,16 +235,7 @@ public class ExperimentalPPTeleOp extends OpMode {
             bPresses = 0;
             bCounter = 0;
         } else if (gamepad2.b) {
-            if (bPresses == 0){
-                upsies = false;
-                //claw.setPosition(1);
-                targetpos = ground;
-                PID = true;
-                bPresses += 1;
-                bCounter = 1000;
-            }
-            else if (bCounter == 0) {
-                targetpos = caldera;
+            targetpos = ground;
                 if (currentHeight <= targetpos){
                     upsies = true;
                 }
@@ -252,10 +243,28 @@ public class ExperimentalPPTeleOp extends OpMode {
                     upsies = false;
                 }
                 PID = true;
-                bPresses = 0;
 
+        }else if (gamepad2.dpad_left){
+            targetpos = caldera;
+            if (currentHeight <= targetpos){
+                upsies = true;
             }
+            else {
+                upsies = false;
+            }
+            PID = true;
+
+        }else if (gamepad2.dpad_right){
+            targetpos = caldera;
+            if (currentHeight <= targetpos){
+                upsies = true;
+            }
+            else {
+                upsies = false;
+            }
+            PID = true;
         }
+
 
         if (gamepad2.right_bumper) {
             claw.setPosition(Range.clip(clawpos + 0.02, 0.7, 0.9));
