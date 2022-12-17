@@ -51,6 +51,7 @@ public class ExperimentalPPTeleOp extends OpMode {
     int caldera = 750;
     int ground = 0;
     int bPresses = 0;
+    int bCounter = 0;
     int currentHeight = 0;
     double WorkingMotorMax = 0.6825;
     double MotorMaxSpeed = 0.5;
@@ -99,6 +100,10 @@ public class ExperimentalPPTeleOp extends OpMode {
         double rightFront = -Range.clip(gamepad2.right_stick_y + gamepad2.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
 
         drive.setMotorPowers(leftFront, leftRear, rightFront, rightRear);
+
+        if (bCounter >= 1) {
+            bCounter -=1;
+        }
 
         clawpos = claw.getPosition();
         liftpos = lift.getCurrentPosition();
@@ -159,12 +164,16 @@ public class ExperimentalPPTeleOp extends OpMode {
             lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             claw.setPosition(0.9);
             lift.setPower(1);
+            bPresses = 0;
+            bCounter = 0;
 
             //  noodle.setPower(-1);
         } else if (gamepad2.dpad_down) {
             PID = false;
             lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             lift.setPower(-1);
+            bPresses = 0;
+            bCounter = 0;
 
             //noodle.setPower(1);
         } else if (!PID) {
@@ -177,9 +186,13 @@ public class ExperimentalPPTeleOp extends OpMode {
         if (gamepad2.right_trigger != 0) {
             targetpos += 20;
             upsies = true;
+            bPresses = 0;
+            bCounter = 0;
         } else if (gamepad2.left_trigger != 0) {
             targetpos -= 20;
             upsies = false;
+            bPresses = 0;
+            bCounter = 0;
         }
 
 
@@ -197,6 +210,8 @@ public class ExperimentalPPTeleOp extends OpMode {
                 upsies = false;
             }
             PID = true;
+            bPresses = 0;
+            bCounter = 0;
         } else if (gamepad2.x) {
             targetpos = medium;
             if (currentHeight <= targetpos){
@@ -206,6 +221,8 @@ public class ExperimentalPPTeleOp extends OpMode {
                 upsies = false;
             }
             PID = true;
+            bPresses = 0;
+            bCounter = 0;
         } else if (gamepad2.y) {
             targetpos = high;
             if (currentHeight <= targetpos){
@@ -215,6 +232,8 @@ public class ExperimentalPPTeleOp extends OpMode {
                 upsies = false;
             }
             PID = true;
+            bPresses = 0;
+            bCounter = 0;
         } else if (gamepad2.b) {
             if (bPresses == 0){
                 upsies = false;
@@ -222,8 +241,9 @@ public class ExperimentalPPTeleOp extends OpMode {
                 targetpos = ground;
                 PID = true;
                 bPresses += 1;
+                bCounter = 1000;
             }
-            else{
+            else if (bCounter == 0) {
                 targetpos = caldera;
                 if (currentHeight <= targetpos){
                     upsies = true;
@@ -233,7 +253,6 @@ public class ExperimentalPPTeleOp extends OpMode {
                 }
                 PID = true;
                 bPresses = 0;
-
 
             }
         }
