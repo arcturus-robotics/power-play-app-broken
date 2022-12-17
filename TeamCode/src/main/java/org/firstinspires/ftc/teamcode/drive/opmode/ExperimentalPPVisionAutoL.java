@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
 import java.util.ArrayList;
 
 @Autonomous
-public class PPVisionAutoL extends LinearOpMode
+public class ExperimentalPPVisionAutoL extends LinearOpMode
 {
     private ArcturusDriveNoRR drive;
     OpenCvCamera camera;
@@ -196,21 +196,18 @@ public class PPVisionAutoL extends LinearOpMode
 
         }
         else if(tagOfInterest.id == IDTOI1){
-            drive.goingLeft(900,0.5);
+            drive.goingLeft(1300,0.5);
             drive.goingForward(200,0);
             drive.goingBackward(700,0.5);
             drive.goingForward(200, 0);
             drive.goingForward(1250,0.5);
         }
         else if(tagOfInterest.id == IDTOI2){
-            drive.goingRight(700,0.5);
-            drive.goingForward(200,0);
-            drive.goingBackward(700,0.5);
-            drive.goingForward(200, 0);
+            drive.goingRight(150, 0.3);
             drive.goingForward(2000,0.3);
-            }
+        }
         else {
-            drive.goingRight(1200,0.5);
+            drive.goingRight(1500,0.5);
             drive.goingForward(200,0);
             drive.goingBackward(700,0.5);
             drive.goingForward(200, 0);

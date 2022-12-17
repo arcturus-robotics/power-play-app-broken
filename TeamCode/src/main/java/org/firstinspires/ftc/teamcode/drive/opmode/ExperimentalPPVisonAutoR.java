@@ -14,11 +14,10 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
 
-
 import java.util.ArrayList;
 
 @Autonomous
-public class PPVisionAutoL extends LinearOpMode
+public class ExperimentalPPVisonAutoR extends LinearOpMode
 {
     private ArcturusDriveNoRR drive;
     OpenCvCamera camera;
@@ -152,10 +151,10 @@ public class PPVisionAutoL extends LinearOpMode
             sleep(20);
         }
 
+
         lift.setTargetPosition(200);
         lift.setPower(1);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         /*
          * The START command just came in: now work off the latest snapshot acquired
          * during the init loop.
@@ -173,9 +172,7 @@ public class PPVisionAutoL extends LinearOpMode
             telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
             telemetry.update();
             boolean tagNotDetected = true;
-            drive.goingRight(300,0.5);
-            drive.goingForward(200,0);
-            drive.goingForward(2000,0.3);
+            drive.goingForward(1500, 0.3);
         }
 
         /* Actually do something useful */
@@ -195,26 +192,27 @@ public class PPVisionAutoL extends LinearOpMode
         if (tagNotDetected){
 
         }
+
         else if(tagOfInterest.id == IDTOI1){
-            drive.goingLeft(900,0.5);
+            drive.goingLeft(1000,0.5);
             drive.goingForward(200,0);
             drive.goingBackward(700,0.5);
-            drive.goingForward(200, 0);
+            drive.goingForward(200,0);
             drive.goingForward(1250,0.5);
         }
         else if(tagOfInterest.id == IDTOI2){
-            drive.goingRight(700,0.5);
-            drive.goingForward(200,0);
-            drive.goingBackward(700,0.5);
+            drive.goingRight(150, 0.3);
+            drive.goingForward(200, 0);
+            drive.goingBackward(200, 0.3);
             drive.goingForward(200, 0);
             drive.goingForward(2000,0.3);
-            }
+        }
         else {
-            drive.goingRight(1200,0.5);
+            drive.goingRight(1500,0.5);
             drive.goingForward(200,0);
             drive.goingBackward(700,0.5);
             drive.goingForward(200, 0);
-            drive.goingForward(900,0.5);
+            drive.goingForward(1150,0.5);
 
             /*
             leftFront.setPower(0.2);
