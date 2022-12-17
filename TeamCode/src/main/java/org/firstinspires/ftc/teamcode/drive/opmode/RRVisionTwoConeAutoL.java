@@ -17,13 +17,11 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
-
 
 import java.util.ArrayList;
 
 @Autonomous(group = "drive")
-public class RRVisionOneConeAutoL extends LinearOpMode {
+public class RRVisionTwoConeAutoL extends LinearOpMode {
 
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -315,7 +313,19 @@ public class RRVisionOneConeAutoL extends LinearOpMode {
         drive.followTrajectory(myTrajectory4);
 
         if (scenario == 0) {
+            drive.followTrajectory(myTrajectory5);
+        }
+
+        if (scenario == 1) {
             drive.followTrajectory(myTrajectory6);
+        }
+
+        if (scenario == 2){
+            drive.followTrajectory(myTrajectory5);
+        }
+
+        if (scenario == 3){
+            drive.followTrajectory(myTrajectory7);
         }
 
     }
