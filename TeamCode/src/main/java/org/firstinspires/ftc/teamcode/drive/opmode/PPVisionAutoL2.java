@@ -14,7 +14,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
 import java.util.ArrayList;
 
-@Autonomous
+@Autonomous(group = "drive")
 public class PPVisionAutoL2 extends LinearOpMode
 {
     OpenCvCamera camera;

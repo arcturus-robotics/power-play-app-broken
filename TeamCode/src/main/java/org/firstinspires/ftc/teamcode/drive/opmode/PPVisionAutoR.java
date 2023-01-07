@@ -204,11 +204,11 @@ public class PPVisionAutoR extends LinearOpMode
             drive.goingForward(2000,0.3);
         }
         else {
-            drive.goingRight(1000,0.5);
+            drive.goingRight(1200,0.5);
             drive.goingForward(200,0);
             drive.goingBackward(700,0.5);
             drive.goingForward(200, 0);
-            drive.goingForward(1150,0.5);
+            drive.goingForward(1000,0.5);
 
             /*
             leftFront.setPower(0.2);

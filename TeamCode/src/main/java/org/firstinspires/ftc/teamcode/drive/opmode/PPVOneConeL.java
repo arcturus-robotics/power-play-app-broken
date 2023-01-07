@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
 
 import java.util.ArrayList;
 
-@Autonomous
+@Autonomous(group = "drive")
 public class PPVOneConeL extends LinearOpMode
 {
     private ArcturusDriveNoRR drive;

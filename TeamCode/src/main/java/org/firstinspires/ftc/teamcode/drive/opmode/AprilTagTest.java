@@ -12,7 +12,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.ArrayList;
 
-@TeleOp
+@TeleOp(group = "drive")
 public class AprilTagTest extends LinearOpMode
 {
     OpenCvCamera camera;
