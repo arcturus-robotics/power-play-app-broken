@@ -55,7 +55,7 @@ public class PPVisionAutoR extends LinearOpMode
         // intaketilt = hardwareMap.get(Servo.class, "ringpusher");
         drive = new ArcturusDriveNoRR(hardwareMap);
         lift =  hardwareMap.get(DcMotorEx.class, "leftShooter");
-        lift.setTargetPosition(80);
+        lift.setTargetPosition(0);
         lift.setPower(1);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -152,9 +152,9 @@ public class PPVisionAutoR extends LinearOpMode
         }
 
 
-        lift.setTargetPosition(200);
-        lift.setPower(1);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        lift.setTargetPosition(0);
+//        lift.setPower(1);
+//        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         /*
          * The START command just came in: now work off the latest snapshot acquired
          * during the init loop.
@@ -194,21 +194,23 @@ public class PPVisionAutoR extends LinearOpMode
         }
 
         else if(tagOfInterest.id == IDTOI1){
-            drive.goingLeft(1000,0.5);
-            drive.goingForward(200,0);
-            drive.goingBackward(700,0.5);
-            drive.goingForward(200,0);
-            drive.goingForward(1250,0.5);
+            drive.goingLeft(800,0.5);
+            drive.goingForward(400,0);
+            drive.goingBackward(400,0.5);
+            drive.goingForward(400,0);
+            drive.goingForward(2000,0.3);
         }
         else if(tagOfInterest.id == IDTOI2){
+            drive.goingRight(250, 0.5);
+            drive.goingForward(400,0);
             drive.goingForward(2000,0.3);
         }
         else {
-            drive.goingRight(1200,0.5);
-            drive.goingForward(200,0);
-            drive.goingBackward(700,0.5);
-            drive.goingForward(200, 0);
-            drive.goingForward(1000,0.5);
+            drive.goingRight(1400,0.5);
+            drive.goingForward(400,0);
+            drive.goingBackward(400,0.5);
+            drive.goingForward(400, 0);
+            drive.goingForward(1700,0.3);
 
             /*
             leftFront.setPower(0.2);
@@ -221,6 +223,9 @@ public class PPVisionAutoR extends LinearOpMode
         }
         drive.goingForward(500,0);
         claw.setPosition(0.7);
+        lift.setTargetPosition(0);
+        lift.setPower(1);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         /*
          * Insert your autonomous code here, probably using the tag pose to decide your configuration.
          */

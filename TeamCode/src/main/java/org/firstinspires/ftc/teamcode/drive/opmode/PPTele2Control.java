@@ -24,6 +24,7 @@ import java.util.ArrayList;
 @TeleOp
 public class PPTele2Control extends OpMode {
     // variables are set
+
     private ArcturusDriveNoRR drive;
     private DcMotorEx duckwheel;
     private DcMotorEx lift;
@@ -39,6 +40,8 @@ public class PPTele2Control extends OpMode {
 
     boolean PID = true;
     boolean upsies;
+    boolean motortoggle = false;
+   boolean slowspeed = false;
 
 
     /*int high = 7900; for previous spool
@@ -46,7 +49,7 @@ public class PPTele2Control extends OpMode {
     int low = 3550; for previous spool*/
     // 4:7 = circumference of previous spool : circumference of new spool
     int maxheight = 4400;
-    int high = 4300;
+    int high = 4400;
     int medium = 3200;
     int low = 1950;
     int ground = 0;
@@ -54,7 +57,7 @@ public class PPTele2Control extends OpMode {
     int selectedpos = 0;
     double WorkingMotorMax = 0.6825-0.05;
     // 0.5 normal
-    double MotorMaxSpeed = 0.65;
+    double MotorMaxSpeed = 0.8;
     int targetpos = ground;
     //double rightfrontpos,leftfrontpos,leftbackpos,rightbackpos;
 
@@ -101,14 +104,33 @@ public class PPTele2Control extends OpMode {
         double leftRear = -Range.clip(gamepad1.left_stick_y + gamepad1.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
         double rightRear = -Range.clip(gamepad1.right_stick_y - gamepad1.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
         double rightFront = -Range.clip(gamepad1.right_stick_y + gamepad1.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
-
+//        if(gamepad1.right_bumper && motortoggle==false){
+//            motortoggle = true;
+//        }
+//        else if(gamepad1.right_bumper && motortoggle==true){
+//            motortoggle = false;
+//        }
+//        else {
+//
+//        }
         if (leftFront != 0 || leftRear != 0 || rightRear != 0 || rightFront != 0) {
-            drive.setMotorPowers(leftFront, leftRear, rightFront, rightRear);
+            if (gamepad1.left_bumper){
+                slowspeed = true;
+                drive.setMotorPowers(leftFront*0.4, leftRear*0.4, rightFront*0.4, rightRear*0.4);
+            }
+//            else if (motortoggle) {
+//                slowspeed = true;
+//                drive.setMotorPowers(leftFront*0.4, leftRear*0.4, rightFront*0.4, rightRear*0.4);
+//            }
+            else {
+                drive.setMotorPowers(leftFront, leftRear, rightFront, rightRear);
+                slowspeed=false;
+            }
         } else {
             if (gamepad1.right_trigger != 0) {
-                drive.setMotorPowers(MotorMaxSpeed, -MotorMaxSpeed, -MotorMaxSpeed, MotorMaxSpeed);
+                drive.setMotorPowers(0.7, -0.7, -0.7, 0.7);
             } else if (gamepad1.left_trigger != 0){
-                drive.setMotorPowers(-MotorMaxSpeed, MotorMaxSpeed, MotorMaxSpeed, -MotorMaxSpeed);
+                drive.setMotorPowers(-0.7, 0.7, 0.7, -0.7);
             }
              else{
                  drive.setMotorPowers(0, 0, 0,0);
@@ -117,38 +139,6 @@ public class PPTele2Control extends OpMode {
 
         clawpos = claw.getPosition();
         liftpos = lift.getCurrentPosition();
-        //liftpos = noodle.getCurrentPosition();
-
-        //rightfrontpos = rf.getCurrentPosition();
-        //rightbackpos = rr.getCurrentPosition();
-        //leftbackpos = lr.getCurrentPosition();
-        //leftfrontpos = lf.getCurrentPosition();
-
-
-        /*
-        if (gamepad1.x) {
-            drive.setMotorPowers(1,0,0,0);
-        }
-        else if (gamepad1.y) {
-            drive.setMotorPowers(0,0,0,1);
-        }
-        else if (gamepad1.a) {
-            drive.setMotorPowers(0,1,0,0);
-        }
-        else if (gamepad1.b) {
-            drive.setMotorPowers(0,0,1,0);
-        }
-        else if (gamepad1.dpad_left) {
-            drive.setMotorPowers(1,-1,1,-1);
-        }
-        else if (gamepad1.dpad_right) {
-            drive.setMotorPowers(-1,1,-1,1);
-        }
-        else {
-            drive.setMotorPowers(0,0,0,0);
-        }
-        */
-
 
         // claw set and lifted to a position
         if (PID) {
@@ -256,7 +246,9 @@ public class PPTele2Control extends OpMode {
         telemetry.addData("lift stay in place", PID);
         telemetry.addData("lift pos", liftpos);
         telemetry.addData("claw pos", clawpos);
-        telemetry.addData("Steve", 999);
+//        telemetry.addData("Steve", 999);
+//        telemetry.addData("Is toggled?", motortoggle);
+        telemetry.addData("Is slow?", slowspeed);
 
         // telemetry.addData("right front", rightfrontpos);
         //telemetry.addData("right rear", rightbackpos);

@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
-import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
 
+import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
 
 import java.util.ArrayList;
 
@@ -22,10 +22,9 @@ import java.util.ArrayList;
  * but it will only use one of them.
  */
 @TeleOp
-public class PPTestBot extends OpMode {
+public class TwoClaw_PPTele2Control extends OpMode {
     // variables are set
-    private Boolean motortoggle = false;
-    private Boolean slowspeed = false;
+
     private ArcturusDriveNoRR drive;
     private DcMotorEx duckwheel;
     private DcMotorEx lift;
@@ -33,30 +32,39 @@ public class PPTestBot extends OpMode {
     private DcMotorEx rf;
     private DcMotorEx rr;
     private DcMotorEx lr;
-    private Servo claw;
+    private Servo lclaw, rclaw;
     long delay = 0;
 
-    double clawpos;
+
+
+    double lclawpos, rclawpos;
     double liftpos;
 
     boolean PID = true;
     boolean upsies;
+    boolean motortoggle = false;
+   boolean slowspeed = false;
 
 
     /*int high = 7900; for previous spool
     int medium = 5800; for previous spool
     int low = 3550; for previous spool*/
     // 4:7 = circumference of previous spool : circumference of new spool
-    int maxheight = 10;
-    int high = 10;
-    int medium = 6;
-    int low = 3;
+    int maxheight = 4400;
+    int high = 4400;
+    int medium = 3200;
+    int low = 1950;
     int ground = 0;
-    int caldera = 2;
+    int caldera = 750;
     int selectedpos = 0;
     double WorkingMotorMax = 0.6825-0.05;
     // 0.5 normal
-    double MotorMaxSpeed = 0.9;
+    double MotorMaxSpeed = 0.8;
+    double lclaw_open = 0.6;
+    double rclaw_open = 0.4;
+    double lclaw_closed = 0.9;
+    double rclaw_closed = 0.9;
+
     int targetpos = ground;
     //double rightfrontpos,leftfrontpos,leftbackpos,rightbackpos;
 
@@ -78,8 +86,11 @@ public class PPTestBot extends OpMode {
         lift.setPower(0.9);
         //noodle = hardwareMap.get(DcMotorEx.class,"rightShooter");
 
-        claw = hardwareMap.get(Servo.class, "claw");
-        claw.setPosition(0.9);
+        lclaw = hardwareMap.get(Servo.class, "lclaw");
+        lclaw.setPosition(0);
+
+        rclaw = hardwareMap.get(Servo.class, "rclaw");
+        rclaw.setPosition(0);
 
 
         //  lf = hardwareMap.get(DcMotorEx.class, "leftFront");
@@ -103,40 +114,42 @@ public class PPTestBot extends OpMode {
         double leftRear = -Range.clip(gamepad1.left_stick_y + gamepad1.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
         double rightRear = -Range.clip(gamepad1.right_stick_y - gamepad1.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
         double rightFront = -Range.clip(gamepad1.right_stick_y + gamepad1.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
-        if(gamepad2.right_bumper && motortoggle==false){
-            motortoggle = true;
-        }
-        else if(gamepad2.right_bumper && motortoggle==true){
-            motortoggle = false;
-        }
-        else {
-
-        }
+//        if(gamepad1.right_bumper && motortoggle==false){
+//            motortoggle = true;
+//        }
+//        else if(gamepad1.right_bumper && motortoggle==true){
+//            motortoggle = false;
+//        }
+//        else {
+//
+//        }
         if (leftFront != 0 || leftRear != 0 || rightRear != 0 || rightFront != 0) {
             if (gamepad1.left_bumper){
                 slowspeed = true;
                 drive.setMotorPowers(leftFront*0.4, leftRear*0.4, rightFront*0.4, rightRear*0.4);
             }
-            else if (motortoggle) {
-                slowspeed = true;
-                drive.setMotorPowers(leftFront*0.4, leftRear*0.4, rightFront*0.4, rightRear*0.4);
-            }
+//            else if (motortoggle) {
+//                slowspeed = true;
+//                drive.setMotorPowers(leftFront*0.4, leftRear*0.4, rightFront*0.4, rightRear*0.4);
+//            }
             else {
                 drive.setMotorPowers(leftFront, leftRear, rightFront, rightRear);
                 slowspeed=false;
             }
         } else {
             if (gamepad1.right_trigger != 0) {
-                drive.setMotorPowers(MotorMaxSpeed, -MotorMaxSpeed, -MotorMaxSpeed, MotorMaxSpeed);
+                drive.setMotorPowers(0.7, -0.7, -0.7, 0.7);
             } else if (gamepad1.left_trigger != 0){
-                drive.setMotorPowers(-MotorMaxSpeed, MotorMaxSpeed, MotorMaxSpeed, -MotorMaxSpeed);
+                drive.setMotorPowers(-0.7, 0.7, 0.7, -0.7);
             }
-            else{
-                drive.setMotorPowers(0, 0, 0,0);
-            }
+             else{
+                 drive.setMotorPowers(0, 0, 0,0);
+             }
         }
 
-        clawpos = claw.getPosition();
+        lclawpos = lclaw.getPosition();
+        rclawpos = rclaw.getPosition();
+
         liftpos = lift.getCurrentPosition();
 
         // claw set and lifted to a position
@@ -166,7 +179,6 @@ public class PPTestBot extends OpMode {
         if (gamepad2.dpad_up) {
             PID = false;
             lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            claw.setPosition(0.9);
             lift.setPower(0.9);
 
             //  noodle.setPower(-1);
@@ -199,17 +211,20 @@ public class PPTestBot extends OpMode {
             selectedpos = low;
             upsies = true;
             delay=System.nanoTime();
-            claw.setPosition(0.9);
+            lclaw.setPosition(lclaw_closed);
+            rclaw.setPosition(rclaw_closed);
         } else if (gamepad2.x) {
             selectedpos=medium;
             upsies = true;
             delay=System.nanoTime();
-            claw.setPosition(0.9);
+            lclaw.setPosition(lclaw_closed);
+            rclaw.setPosition(rclaw_closed);
         } else if (gamepad2.y) {
             selectedpos=high;
             upsies = true;
             delay=System.nanoTime();
-            claw.setPosition(0.9);
+            lclaw.setPosition(lclaw_closed);
+            rclaw.setPosition(rclaw_closed);
         } else if (gamepad2.b) {
             upsies = false;
             //claw.setPosition(1);
@@ -224,10 +239,12 @@ public class PPTestBot extends OpMode {
 
 
         if (gamepad2.right_bumper) {
-            claw.setPosition(Range.clip(clawpos + 0.02, 0.7, 0.9));
+            lclaw.setPosition(Range.clip(lclawpos+ 0.02, 0.6, 0.9));
+            rclaw.setPosition(Range.clip(rclawpos+ 0.02, 0.4, 0.9));
             // intaketilt.setPosition(0);
         } else if (gamepad2.left_bumper) {
-            claw.setPosition(Range.clip(clawpos - 0.02, 0.7, 0.9));
+            lclaw.setPosition(Range.clip(lclawpos - 0.02, 0.6, 0.9));
+            rclaw.setPosition(Range.clip(rclawpos - 0.02, 0.4, 0.9));
             // intaketilt.setPcosition(1);
         }
         /*
@@ -244,9 +261,10 @@ public class PPTestBot extends OpMode {
         // telemetry.addData("duckspeed",duckspeed);
         telemetry.addData("lift stay in place", PID);
         telemetry.addData("lift pos", liftpos);
-        telemetry.addData("claw pos", clawpos);
-        telemetry.addData("Steve", 999);
-        telemetry.addData("Is toggled?", motortoggle);
+        telemetry.addData("left claw pos", lclawpos);
+        telemetry.addData("right claw pos", rclawpos);
+//        telemetry.addData("Steve", 999);
+//        telemetry.addData("Is toggled?", motortoggle);
         telemetry.addData("Is slow?", slowspeed);
 
         // telemetry.addData("right front", rightfrontpos);

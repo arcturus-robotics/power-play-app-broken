@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
-import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
 
+import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
 
 import java.util.ArrayList;
 
@@ -22,10 +22,9 @@ import java.util.ArrayList;
  * but it will only use one of them.
  */
 @TeleOp
-public class PPTestBot extends OpMode {
+public class PPTele2ControlViper extends OpMode {
     // variables are set
     private Boolean motortoggle = false;
-    private Boolean slowspeed = false;
     private ArcturusDriveNoRR drive;
     private DcMotorEx duckwheel;
     private DcMotorEx lift;
@@ -47,18 +46,16 @@ public class PPTestBot extends OpMode {
     int medium = 5800; for previous spool
     int low = 3550; for previous spool*/
     // 4:7 = circumference of previous spool : circumference of new spool
-    int maxheight = 10;
-    int high = 10;
-    int medium = 6;
-    int low = 3;
+    int maxheight = 4400;
+    int high = 4400;
+    int medium = 3200;
+    int low = 1950;
     int ground = 0;
-    int caldera = 2;
+    int caldera = 750;
     int selectedpos = 0;
     double WorkingMotorMax = 0.6825-0.05;
-    // 0.5 normal
     double MotorMaxSpeed = 0.9;
     int targetpos = ground;
-    //double rightfrontpos,leftfrontpos,leftbackpos,rightbackpos;
 
     ArrayList<Boolean> boolArray = new ArrayList<Boolean>();
     int booleanIncrement = 0;
@@ -81,13 +78,6 @@ public class PPTestBot extends OpMode {
         claw = hardwareMap.get(Servo.class, "claw");
         claw.setPosition(0.9);
 
-
-        //  lf = hardwareMap.get(DcMotorEx.class, "leftFront");
-        //rr = hardwareMap.get(DcMotorEx.class, "rightRear");
-        //lr = hardwareMap.get(DcMotorEx.class, "leftRear");
-        //rf = hardwareMap.get(DcMotorEx.class, "rightFront");
-
-
     }
 
     @Override
@@ -103,27 +93,13 @@ public class PPTestBot extends OpMode {
         double leftRear = -Range.clip(gamepad1.left_stick_y + gamepad1.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
         double rightRear = -Range.clip(gamepad1.right_stick_y - gamepad1.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
         double rightFront = -Range.clip(gamepad1.right_stick_y + gamepad1.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
-        if(gamepad2.right_bumper && motortoggle==false){
-            motortoggle = true;
-        }
-        else if(gamepad2.right_bumper && motortoggle==true){
-            motortoggle = false;
-        }
-        else {
 
-        }
         if (leftFront != 0 || leftRear != 0 || rightRear != 0 || rightFront != 0) {
-            if (gamepad1.left_bumper){
-                slowspeed = true;
-                drive.setMotorPowers(leftFront*0.4, leftRear*0.4, rightFront*0.4, rightRear*0.4);
-            }
-            else if (motortoggle) {
-                slowspeed = true;
-                drive.setMotorPowers(leftFront*0.4, leftRear*0.4, rightFront*0.4, rightRear*0.4);
+            if (gamepad1.left_bumper) {
+                drive.setMotorPowers(leftFront * 0.4, leftRear * 0.4, rightFront * 0.4, rightRear * 0.4);
             }
             else {
                 drive.setMotorPowers(leftFront, leftRear, rightFront, rightRear);
-                slowspeed=false;
             }
         } else {
             if (gamepad1.right_trigger != 0) {
@@ -131,9 +107,9 @@ public class PPTestBot extends OpMode {
             } else if (gamepad1.left_trigger != 0){
                 drive.setMotorPowers(-MotorMaxSpeed, MotorMaxSpeed, MotorMaxSpeed, -MotorMaxSpeed);
             }
-            else{
-                drive.setMotorPowers(0, 0, 0,0);
-            }
+             else{
+                 drive.setMotorPowers(0, 0, 0,0);
+             }
         }
 
         clawpos = claw.getPosition();
@@ -246,8 +222,6 @@ public class PPTestBot extends OpMode {
         telemetry.addData("lift pos", liftpos);
         telemetry.addData("claw pos", clawpos);
         telemetry.addData("Steve", 999);
-        telemetry.addData("Is toggled?", motortoggle);
-        telemetry.addData("Is slow?", slowspeed);
 
         // telemetry.addData("right front", rightfrontpos);
         //telemetry.addData("right rear", rightbackpos);
