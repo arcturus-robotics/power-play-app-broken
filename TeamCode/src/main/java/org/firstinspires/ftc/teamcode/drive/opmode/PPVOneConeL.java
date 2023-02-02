@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
 
 import java.util.ArrayList;
 
+@Disabled
 @Autonomous(group = "drive")
 public class PPVOneConeL extends LinearOpMode
 {

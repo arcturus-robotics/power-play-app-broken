@@ -5,6 +5,7 @@ package org.firstinspires.ftc.teamcode.drive.opmode;
 // import com.acmerobotics.roadrunner.geometry.Pose2d;
 // import com.acmerobotics.roadrunner.geometry.Vector2d;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
  * Of course, it still works with two controllers plugged in,
  * but it will only use one of them.
  */
+@Disabled
 @TeleOp
 public class TwoClaw_PPTele2Control extends OpMode {
     // variables are set
@@ -87,7 +89,7 @@ public class TwoClaw_PPTele2Control extends OpMode {
         //noodle = hardwareMap.get(DcMotorEx.class,"rightShooter");
 
         lclaw = hardwareMap.get(Servo.class, "lclaw");
-        lclaw.setPosition(0);
+        lclaw.setPosition(1);
 
         rclaw = hardwareMap.get(Servo.class, "rclaw");
         rclaw.setPosition(0);
@@ -239,12 +241,12 @@ public class TwoClaw_PPTele2Control extends OpMode {
 
 
         if (gamepad2.right_bumper) {
-            lclaw.setPosition(Range.clip(lclawpos+ 0.02, 0.6, 0.9));
-            rclaw.setPosition(Range.clip(rclawpos+ 0.02, 0.4, 0.9));
+            lclaw.setPosition(Range.clip(lclawpos+ 0.02, 0, 1));
+            rclaw.setPosition(Range.clip(rclawpos-0.02, 0, 1));
             // intaketilt.setPosition(0);
         } else if (gamepad2.left_bumper) {
-            lclaw.setPosition(Range.clip(lclawpos - 0.02, 0.6, 0.9));
-            rclaw.setPosition(Range.clip(rclawpos - 0.02, 0.4, 0.9));
+            lclaw.setPosition(Range.clip(lclawpos - 0.02, 0, 1));
+            rclaw.setPosition(Range.clip(rclawpos + 0.02, 0, 1));
             // intaketilt.setPcosition(1);
         }
         /*

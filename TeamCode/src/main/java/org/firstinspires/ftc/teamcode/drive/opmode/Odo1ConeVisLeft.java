@@ -1,15 +1,11 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -18,20 +14,28 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import com.acmerobotics.roadrunner.trajectory.DisplacementMarker;
+import com.acmerobotics.roadrunner.trajectory.TemporalMarker;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 
 import java.util.ArrayList;
 
 
-@Autonomous(group = "drive")
-public class RRVisionTwoConeAutoR extends LinearOpMode {
-
+@Autonomous
+public class Odo1ConeVisLeft extends LinearOpMode
+{
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
     static final double FEET_PER_METER = 3.28084;
-
     private DcMotorEx lift;
     private Servo claw;
+
 
     // Lens intrinsics
     // UNITS ARE PIXELS
@@ -49,17 +53,26 @@ public class RRVisionTwoConeAutoR extends LinearOpMode {
     int IDTOI2 = 1;
     int IDTOI3 = 2;// Tag ID 18 from the 36h11 family
 
-    int scenario = 0;
-
     AprilTagDetection tagOfInterest = null;
 
     boolean tagNotDetected = false;
 
+    Pose2d startinglocatiion = new Pose2d(31 - 0.125, -64.28125, Math.toRadians(90));
+
     @Override
-    public void runOpMode() {
+    public void runOpMode()
+    {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        lift = hardwareMap.get(DcMotorEx.class, "leftShooter");
+        drive.setPoseEstimate(startinglocatiion);
+
+        lift =  hardwareMap.get(DcMotorEx.class, "leftShooter");
         claw = hardwareMap.get(Servo.class, "claw");
+
+        lift.setTargetPosition(0);
+        lift.setPower(1);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        claw.setPosition(0.9);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -67,6 +80,7 @@ public class RRVisionTwoConeAutoR extends LinearOpMode {
 
         camera.setPipeline(aprilTagDetectionPipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+
         {
             @Override
             public void onOpened()
@@ -82,14 +96,66 @@ public class RRVisionTwoConeAutoR extends LinearOpMode {
         });
 
         telemetry.setMsTransmissionInterval(50);
+        //adb connect 192.168.43.1:5555
+        //very edge of tile on the right edge
+        TrajectorySequence highcone1 = drive.trajectorySequenceBuilder(startinglocatiion)
+                .splineTo(new Vector2d(-35.42, -36.21), Math.toRadians(90.00))
+                //.splineTo(new Vector2d(25.79+2.25, -2.74), Math.toRadians(140.00))
+                .splineTo(new Vector2d(26.9, -6.9289), Math.toRadians(138))
+                /*
+                Editing to make it align
+                 */
+                /*
+                .back(3)
+                .forward(2)
+                .strafeRight(1)
+
+                 */
+                /*
+                lowering lift
+                 */
+
+                .build();
+
+        TrajectorySequence leavehighjunction = drive.trajectorySequenceBuilder(highcone1.end())
+                .back(12)
+                .build();
+
+        TrajectorySequence parkingzone1 = drive.trajectorySequenceBuilder(leavehighjunction.end())
+                .turn(Math.toRadians(42))
+                .forward(24)
+                .build();
+
+        TrajectorySequence parkingzone2 = drive.trajectorySequenceBuilder(leavehighjunction.end())
+                //.lineToLinearHeading(new Pose2d(36.42, -24.00, Math.toRadians(270)))
+                .back(2)
+                .turn(Math.toRadians(-48))
+                .back(24)
+                .build();
+
+        TrajectorySequence parkingzone3 = drive.trajectorySequenceBuilder(leavehighjunction.end())
+                //.lineToLinearHeading(new Pose2d(36.42, -24, Math.toRadians(90)))
+                //.turn(Math.toRadians(90-drive.getPoseEstimate().getHeading()))
+                //.back(40)
+                //.strafeRight(25)
+                //.forward(40)
+                //  .splineTo(new Vector2d(48.11, -11.37), Math.toRadians(0))
+                //.setReversed(true)
+                .back(2)
+                .turn(Math.toRadians(-138))
+                .forward(20)
+                .build();
+
+        TrajectorySequence getcone = drive.trajectorySequenceBuilder(leavehighjunction.end())
+                .lineToLinearHeading(new Pose2d(58.11, -11.58, Math.toRadians(190)))
+
+                .build();
+
 
         /*
          * The INIT-loop:
          * This REPLACES waitForStart!
          */
-
-
-
 
         while (!isStarted() && !isStopRequested())
         {
@@ -151,185 +217,75 @@ public class RRVisionTwoConeAutoR extends LinearOpMode {
         }
 
 
-        lift.setTargetPosition(200);
-        lift.setPower(1);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         /*
          * The START command just came in: now work off the latest snapshot acquired
          * during the init loop.
          */
 
-        /* Update the telemetry */
         if(tagOfInterest != null)
         {
             telemetry.addLine("Tag snapshot:\n");
             tagToTelemetry(tagOfInterest);
-            telemetry.update();
+            try {
+                telemetry.update();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         else
         {
             telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
             telemetry.update();
             boolean tagNotDetected = true;
-            int scenario = 0;
-            // drive.goingForward(1500, 0.3);
         }
 
-        /* Actually do something useful */
-        //if(tagOfInterest == null){
-        // leftFront.setPower(0.1);
-        //rightFront.setPower(0.1);
-        //rightRear.setPower(0.1);
-        //leftRear.setPower(0.1);
-        //sleep(1000);
+        lift.setTargetPosition(4600);
+        lift.setPower(0.9);
+        drive.followTrajectorySequence(highcone1);
+        sleep(10000);
         /*
-         * Insert your autonomous code here, presumably running some default configuration
-         * since the tag was never sighted during INIT
+        lift.setTargetPosition(0);
+        lift.setPower(0.9);
+        sleep(10000);
          */
-        //}
-        //else
-        //
-        if (tagNotDetected){
-
-        }
-
-        else if(tagOfInterest.id == IDTOI1){
-            //   drive.goingLeft(1040,0.5);
-            //   drive.goingForward(200,0);
-            // drive.goingBackward(700,0.5);
-            // drive.goingForward(200,0);
-            //  drive.goingForward(1250,0.5);
-            int scenario = 1;
-        }
-        else if(tagOfInterest.id == IDTOI2){
-            // drive.goingRight(190, 0.3);
-            // drive.goingForward(200, 0);
-            // drive.goingBackward(200, 0.3);
-            // drive.goingForward(200, 0);
-            // drive.goingForward(2000,0.3);
-            int scenario = 2;
-        }
-        else {
-            //drive.goingRight(1500,0.5);
-            //drive.goingForward(200,0);
-            //drive.goingBackward(700,0.5);
-            //drive.goingForward(200, 0);
-            //drive.goingForward(1150,0.5);
-            int scenario = 3;
-
-            /*
-            leftFront.setPower(0.2);
-            rightFront.setPower(0.2);
-            rightRear.setPower(0.2);
-            leftRear.setPower(0.2);
-            sleep(7000);
-
-             */
-        }
-        // drive.goingForward(500,0);
         claw.setPosition(0.7);
+
+        drive.followTrajectorySequence(leavehighjunction);
+        sleep(1000);
+
+        //drive.followTrajectorySequence(getcone);
+        // sleep(1000)
+
+        //drive.followTrajectorySequence(highcone1)
+        //sleep(1000)
+
+        //drive.followTrajectorySequence(leavehighjunction);
+        //sleep(1000)
+
         /*
-         * Insert your autonomous code here, probably using the tag pose to decide your configuration.
+        PARKING
          */
+        try {
+            if (tagOfInterest.id == IDTOI1) {
+                drive.followTrajectorySequence(parkingzone1);
 
-
-        /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-        // while (opModeIsActive()) {sleep(20);}
-
-        Trajectory myTrajectory1 = drive.trajectoryBuilder(new Pose2d())
-                .strafeLeft(10)
-                .forward(10)
-                .strafeLeft(5)
-                .forward(5)
-                .build();
-
-        Trajectory myTrajectory2 = drive.trajectoryBuilder(new Pose2d())
-                .back(5)
-                .strafeRight(36)
-                .forward(5)
-                .build();
-
-        Trajectory myTrajectory3 = drive.trajectoryBuilder(new Pose2d())
-                .back(5)
-                .strafeLeft(36)
-                .forward(5)
-                .build();
-
-        Trajectory myTrajectory4 = drive.trajectoryBuilder(new Pose2d())
-                .back(5)
-                .strafeRight(5)
-                .back(15)
-                .build();
-
-        Trajectory myTrajectory5 = drive.trajectoryBuilder(new Pose2d())
-                .strafeRight(10)
-                .forward(10)
-                .build();
-
-        Trajectory myTrajectory6 = drive.trajectoryBuilder(new Pose2d())
-                .strafeRight(20)
-                .forward(10)
-                .build();
-
-        Trajectory myTrajectory7 = drive.trajectoryBuilder(new Pose2d())
-                .strafeRight(30)
-                .forward(10)
-                .build();
-
-
-        waitForStart();
-
-        if(isStopRequested()) return;
-
-        claw.setPosition(0.9);
-        sleep(2000);
-
-        lift.setTargetPosition(5100);
-        lift.setPower(1.0);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        drive.followTrajectory(myTrajectory1);
-
-        lift.setTargetPosition(1687);
-        lift.setPower(0.8);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        drive.followTrajectory(myTrajectory2);
-
-        claw.setPosition(0.9);
-        sleep(2000);
-
-        lift.setTargetPosition(5100);
-        lift.setPower(1);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        drive.followTrajectory(myTrajectory3);
-
-        claw.setPosition(0.7);
-        sleep(2000);
+            } else if (tagOfInterest.id == IDTOI2) {
+                drive.followTrajectorySequence(parkingzone2);
+            } else {
+                drive.followTrajectorySequence(parkingzone3);
+            }
+        }
+        catch (Exception e){
+            drive.followTrajectorySequence(parkingzone2);
+        }
+        /*
+        CODE FOR TAG NOT DETECTED
+         */
 
         lift.setTargetPosition(0);
-        lift.setPower(0.8);
+        lift.setPower(1);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        drive.followTrajectory(myTrajectory4);
-
-        if (scenario == 0) {
-            drive.followTrajectory(myTrajectory5);
-        }
-
-        if (scenario == 1) {
-            drive.followTrajectory(myTrajectory6);
-        }
-
-        if (scenario == 2){
-            drive.followTrajectory(myTrajectory5);
-        }
-
-        if (scenario == 3){
-            drive.followTrajectory(myTrajectory7);
-        }
-
+        sleep(1000);
     }
 
     void tagToTelemetry(AprilTagDetection detection)
@@ -342,5 +298,4 @@ public class RRVisionTwoConeAutoR extends LinearOpMode {
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
-
 }

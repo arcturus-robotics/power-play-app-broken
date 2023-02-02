@@ -194,7 +194,7 @@ public class PPVisionAutoR extends LinearOpMode
         }
 
         else if(tagOfInterest.id == IDTOI1){
-            drive.goingLeft(800,0.5);
+            drive.goingLeft(860,0.5);
             drive.goingForward(400,0);
             drive.goingBackward(400,0.5);
             drive.goingForward(400,0);

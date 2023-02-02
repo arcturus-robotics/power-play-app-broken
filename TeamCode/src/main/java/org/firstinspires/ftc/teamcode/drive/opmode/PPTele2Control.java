@@ -51,7 +51,7 @@ public class PPTele2Control extends OpMode {
     int maxheight = 4400;
     int high = 4400;
     int medium = 3200;
-    int low = 1950;
+    int low = 1850;
     int ground = 0;
     int caldera = 750;
     int selectedpos = 0;
@@ -81,7 +81,6 @@ public class PPTele2Control extends OpMode {
 
         claw = hardwareMap.get(Servo.class, "claw");
         claw.setPosition(0.9);
-
 
         //  lf = hardwareMap.get(DcMotorEx.class, "leftFront");
         //rr = hardwareMap.get(DcMotorEx.class, "rightRear");
