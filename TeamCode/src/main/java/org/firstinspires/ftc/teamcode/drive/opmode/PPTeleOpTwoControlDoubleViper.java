@@ -24,12 +24,13 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
  * but it will only use one of them.
  */
 @TeleOp
-public class PPTele2Control extends OpMode {
+public class PPTeleOpTwoControlDoubleViper extends OpMode {
     // variables are set
 
     private ArcturusDriveNoRR drive;
     private DcMotorEx duckwheel;
-    private DcMotorEx lift;
+    private DcMotorEx lift_Right;
+    private DcMotorEx lift_Left;
     private DcMotorEx lf;
     private DcMotorEx rf;
     private DcMotorEx rr;
@@ -40,12 +41,13 @@ public class PPTele2Control extends OpMode {
 //    TouchSensor touch;
 
     double clawpos;
-    double liftpos;
+    double liftpos_right;
+    double liftpos_left;
 
     boolean PID = true;
     boolean upsies;
     boolean motortoggle = false;
-   boolean slowspeed = false;
+    boolean slowspeed = false;
 
 
     /*int high = 7900; for previous spool
@@ -76,12 +78,18 @@ public class PPTele2Control extends OpMode {
         //  noodle = hardwareMap.get(DcMotorEx.class, "intake");
         duckwheel = hardwareMap.get(DcMotorEx.class, "front");
 
-        lift = hardwareMap.get(DcMotorEx.class, "leftShooter");
-        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        lift.setTargetPosition(targetpos);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lift.setPower(0.9);
+        lift_Right = hardwareMap.get(DcMotorEx.class, "rightShooter");
+        lift_Right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lift_Right.setTargetPosition(targetpos);
+        lift_Right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift_Right.setPower(0.9);
         //noodle = hardwareMap.get(DcMotorEx.class,"rightShooter");
+
+        lift_Left= hardwareMap.get(DcMotorEx.class, "leftShooter");
+        lift_Left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lift_Left.setTargetPosition(targetpos);
+        lift_Left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift_Left.setPower(0.9);
 
         claw = hardwareMap.get(Servo.class, "claw");
         claw.setPosition(0.9);
@@ -144,13 +152,14 @@ public class PPTele2Control extends OpMode {
             } else if (gamepad1.left_trigger != 0){
                 drive.setMotorPowers(-0.7, 0.7, 0.7, -0.7);
             }
-             else{
-                 drive.setMotorPowers(0, 0, 0,0);
-             }
+            else{
+                drive.setMotorPowers(0, 0, 0,0);
+            }
         }
 
         clawpos = claw.getPosition();
-        liftpos = lift.getCurrentPosition();
+        liftpos_right = lift_Right.getCurrentPosition();
+        liftpos_left = lift_Left.getCurrentPosition();
 
         // claw set and lifted to a position
         if (PID) {
@@ -160,12 +169,16 @@ public class PPTele2Control extends OpMode {
             if (targetpos < 0) {
                 targetpos = 0;
             }
-            lift.setTargetPosition(targetpos);
-            lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            lift_Right.setTargetPosition(targetpos);
+            lift_Right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            lift_Left.setTargetPosition(targetpos);
+            lift_Left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             if (upsies) {
-                lift.setPower(0.9);
+                lift_Right.setPower(0.9);
+                lift_Left.setPower(0.9);
             } else {
-                lift.setPower(0.9);
+                lift_Right.setPower(0.9);
+                lift_Left.setPower(0.9);
             }
         }
         if (delay != 0) {
@@ -178,20 +191,27 @@ public class PPTele2Control extends OpMode {
 
         if (gamepad2.dpad_up) {
             PID = false;
-            lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            lift_Left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            lift_Right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             claw.setPosition(0.9);
-            lift.setPower(0.9);
+            lift_Left.setPower(0.9);
+            lift_Right.setPower(0.9);
 
             //  noodle.setPower(-1);
         } else if (gamepad2.dpad_down) {
             PID = false;
-            lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            lift.setPower(-1);
+            lift_Left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            lift_Left.setPower(-1);
+            lift_Right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            lift_Right.setPower(-1);
+
 
             //noodle.setPower(1);
         } else if (!PID) {
-            lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            lift.setPower(0);
+            lift_Left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            lift_Left.setPower(0);
+            lift_Right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            lift_Right.setPower(0);
             //          lift.setTargetPosition(0);
 
         }
@@ -250,13 +270,15 @@ public class PPTele2Control extends OpMode {
 
         if (gamepad2.share) {
             PID = false;
-            lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            lift_Right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            lift_Left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
 
 
         // telemetry.addData("duckspeed",duckspeed);
         telemetry.addData("lift stay in place", PID);
-        telemetry.addData("lift pos", liftpos);
+        telemetry.addData("lift pos right", liftpos_right);
+        telemetry.addData("lift pos left", liftpos_left);
         telemetry.addData("claw pos", clawpos);
 //        telemetry.addData("Steve", 999);
 //        telemetry.addData("Is toggled?", motortoggle);

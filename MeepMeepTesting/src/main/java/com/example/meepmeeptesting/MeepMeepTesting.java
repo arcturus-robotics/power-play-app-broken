@@ -31,14 +31,14 @@ public class MeepMeepTesting {
 
 
                                 //scenario 1
-                                //.turn(Math.toRadians(-135))
-                               // .back(24)
-                                //.strafeLeft(25)
-
-                                //scenario 3
                                 .turn(Math.toRadians(-135))
                                 .back(24)
-                                .strafeRight(25)
+                                .strafeLeft(24)
+
+                                //scenario 3
+                                //.turn(Math.toRadians(-135))
+                                //.back(24)
+                                //.strafeRight(23)
 
                                 //.turn(Math.toRadians(-45))
                                 //.forward(28)

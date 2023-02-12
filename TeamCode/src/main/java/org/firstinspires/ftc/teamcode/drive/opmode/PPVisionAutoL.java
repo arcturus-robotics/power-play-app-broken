@@ -13,9 +13,12 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
-
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import java.util.ArrayList;
+
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous
 public class PPVisionAutoL extends LinearOpMode
@@ -27,6 +30,10 @@ public class PPVisionAutoL extends LinearOpMode
     static final double FEET_PER_METER = 3.28084;
     private DcMotorEx lift,leftFront, leftRear, rightRear, rightFront;
     private Servo claw;
+    private TouchSensor touch_sensor;
+
+    private DistanceSensor sensorRange_left;
+    private DistanceSensor sensorRange_right;
 
 
     // Lens intrinsics
@@ -62,6 +69,11 @@ public class PPVisionAutoL extends LinearOpMode
 
         claw = hardwareMap.get(Servo.class, "claw");
         claw.setPosition(0.9);
+
+        touch_sensor = hardwareMap.get(TouchSensor.class, "touch");
+
+        sensorRange_left = hardwareMap.get(DistanceSensor.class, "sensor_range_left");
+        sensorRange_right = hardwareMap.get(DistanceSensor.class, "sensor_range_right");
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -247,6 +259,9 @@ public class PPVisionAutoL extends LinearOpMode
         telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
         telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
+        telemetry.addLine(String.format("touching", touch_sensor.isPressed()));
+        telemetry.addLine(String.format("left distance", sensorRange_left.getDistance(DistanceUnit.INCH)));
+        telemetry.addLine(String.format("right distance", sensorRange_right.getDistance(DistanceUnit.INCH)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
 }

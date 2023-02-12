@@ -51,8 +51,16 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
         X_MULTIPLIER DATA: 0.97971716055, 0.97867774173,0.97898903921; AVG: 0.97912798049
         Y_MULTIPLIER DATA: 0.98234712997,0.98387791009,0.98227777507; AVG: 0.98283427171
      */
+    //prev 0.979127
+    public static double X_MULTIPLIER = 0.988716; // Multiplier in the X direction
+    //0.982813
+    //40
+    //0.994619
+    //60
+    //All
+    //0.988716
 
-    public static double X_MULTIPLIER = 0.979127; // Multiplier in the X direction
+
     public static double Y_MULTIPLIER = 0.982834; // Multiplier in the Y direction
 
     private Encoder leftEncoder, rightEncoder, backEncoder;

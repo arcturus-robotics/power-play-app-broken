@@ -12,6 +12,9 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 
 
 import java.util.ArrayList;
@@ -24,7 +27,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
  * but it will only use one of them.
  */
 @TeleOp
-public class PPTele2Control extends OpMode {
+public class PPTele2CTouch extends OpMode {
     // variables are set
 
     private ArcturusDriveNoRR drive;
@@ -37,15 +40,16 @@ public class PPTele2Control extends OpMode {
     private Servo claw;
     long delay = 0;
 
-//    TouchSensor touch;
+    private TouchSensor touch;
 
     double clawpos;
     double liftpos;
 
     boolean PID = true;
     boolean upsies;
-    boolean motortoggle = false;
-   boolean slowspeed = false;
+    boolean slowspeed = false;
+    boolean touchPressed = false;
+    boolean clawClosed = true;
 
 
     /*int high = 7900; for previous spool
@@ -53,9 +57,9 @@ public class PPTele2Control extends OpMode {
     int low = 3550; for previous spool*/
     // 4:7 = circumference of previous spool : circumference of new spool
     int maxheight = 4400;
-    int high = 4400;
-    int medium = 3200;
-    int low = 1850;
+    int high = 4000;
+    int medium = 2800;
+    int low = 1450;
     int ground = 0;
     int caldera = 750;
     int selectedpos = 0;
@@ -86,7 +90,7 @@ public class PPTele2Control extends OpMode {
         claw = hardwareMap.get(Servo.class, "claw");
         claw.setPosition(0.9);
 
-//        touch = hardwareMap.get(TouchSensor.class, "Touch");
+        touch = hardwareMap.get(TouchSensor.class, "touch");
 
         //  lf = hardwareMap.get(DcMotorEx.class, "leftFront");
         //rr = hardwareMap.get(DcMotorEx.class, "rightRear");
@@ -144,9 +148,9 @@ public class PPTele2Control extends OpMode {
             } else if (gamepad1.left_trigger != 0){
                 drive.setMotorPowers(-0.7, 0.7, 0.7, -0.7);
             }
-             else{
-                 drive.setMotorPowers(0, 0, 0,0);
-             }
+            else{
+                drive.setMotorPowers(0, 0, 0,0);
+            }
         }
 
         clawpos = claw.getPosition();
@@ -180,6 +184,7 @@ public class PPTele2Control extends OpMode {
             PID = false;
             lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             claw.setPosition(0.9);
+            clawClosed=true;
             lift.setPower(0.9);
 
             //  noodle.setPower(-1);
@@ -213,16 +218,19 @@ public class PPTele2Control extends OpMode {
             upsies = true;
             delay=System.nanoTime();
             claw.setPosition(0.9);
+            clawClosed=true;
         } else if (gamepad2.x) {
             selectedpos=medium;
             upsies = true;
             delay=System.nanoTime();
             claw.setPosition(0.9);
+            clawClosed=true;
         } else if (gamepad2.y) {
             selectedpos=high;
             upsies = true;
             delay=System.nanoTime();
             claw.setPosition(0.9);
+            clawClosed=true;
         } else if (gamepad2.b) {
             upsies = false;
             //claw.setPosition(1);
@@ -237,10 +245,12 @@ public class PPTele2Control extends OpMode {
 
 
         if (gamepad2.right_bumper) {
-            claw.setPosition(Range.clip(clawpos + 0.02, 0.68, 0.9));
+            claw.setPosition(0.9);
+            clawClosed=true;
             // intaketilt.setPosition(0);
         } else if (gamepad2.left_bumper) {
-            claw.setPosition(Range.clip(clawpos - 0.02, 0.68, 0.9));
+            claw.setPosition(0.68);
+            clawClosed=false;
             // intaketilt.setPcosition(1);
         }
         /*
@@ -252,15 +262,40 @@ public class PPTele2Control extends OpMode {
             PID = false;
             lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
-
-
+        if (touch.isPressed() && clawClosed) {
+            while (touch.isPressed()) {
+                lift.setTargetPosition(lift.getCurrentPosition() + 50);
+                lift.setPower(0.9);
+                lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            drive.goingForward(500,0);
+                    lift.setTargetPosition(lift.getCurrentPosition() + 200);
+                    lift.setPower(0.9);
+                    lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    drive.goingForward(500,0);
+                    drive.goingForward(100, 0.8);
+                    drive.goingForward(500,0);
+                    lift.setTargetPosition(lift.getCurrentPosition() - 200);
+                    lift.setPower(0.9);
+                    lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    claw.setPosition(0.68);
+                    clawClosed=false;
+                    drive.goingForward(500,0);
+                    drive.goingBackward(200, 1);
+                    drive.goingForward(500,0);
+                    lift.setTargetPosition(0);
+                    lift.setPower(0.9);
+                    lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    drive.goingForward(500,0);
+        }
         // telemetry.addData("duckspeed",duckspeed);
         telemetry.addData("lift stay in place", PID);
         telemetry.addData("lift pos", liftpos);
-        telemetry.addData("claw pos", clawpos);
+        telemetry.addData("Claw Closed?", clawClosed);
 //        telemetry.addData("Steve", 999);
 //        telemetry.addData("Is toggled?", motortoggle);
         telemetry.addData("Is slow?", slowspeed);
+        telemetry.addData("Touch pressed?",touch.isPressed());
 
         // telemetry.addData("right front", rightfrontpos);
         //telemetry.addData("right rear", rightbackpos);
