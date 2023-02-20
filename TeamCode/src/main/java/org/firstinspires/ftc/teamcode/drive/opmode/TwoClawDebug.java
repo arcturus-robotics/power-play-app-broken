@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
 import java.util.ArrayList;
 
@@ -54,10 +55,10 @@ public class TwoClawDebug extends OpMode {
     int horizSelectedPos = 0;
     int horizTargetPos = intakePos;
 
-    double lclaw_open = 0.41;
-    double rclaw_open = 0.29;
-    double lclaw_closed = 0.51+0.045;
-    double rclaw_closed = 0.22-0.045;
+    double lclaw_open = 0.35;
+    double rclaw_open = 0.25;
+    double lclaw_closed = 0.5+0.045;
+    double rclaw_closed = 0.15-0.045;
 
     //double WorkingMotorMax = 0.6825-0.05;
     double MotorMaxSpeed = 0.8;
@@ -285,27 +286,11 @@ public class TwoClawDebug extends OpMode {
 
         //controlling claw
         if (gamepad2.right_bumper) {
-            /*
             lclaw.setPosition(Range.clip(lclawpos+ 0.01, 0, 1));
             rclaw.setPosition(Range.clip(rclawpos+ 0.01, 0, 1));
-
-             */
-
-
-            lclaw.setPosition(lclaw_closed);
-            rclaw.setPosition(rclaw_closed);
-
-
         } else if (gamepad2.left_bumper) {
-
-            /*
             lclaw.setPosition(Range.clip(lclawpos - 0.01, 0, 1));
             rclaw.setPosition(Range.clip(rclawpos - 0.01, 0, 1));
-
-             */
-
-            lclaw.setPosition(lclaw_open);
-            rclaw.setPosition(rclaw_open);
         }
 
         //failsafe to reset encoder

@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
-import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
 
+import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
 
 import java.util.ArrayList;
 
@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * but it will only use one of them.
  */
 @TeleOp
-public class PPTele2ControlSirachaV2 extends OpMode {
+public class PPOneControlSirachaV2 extends OpMode {
     private ArcturusDriveNoRR drive;
     private DcMotorEx lift_Right, lift_Left, horizontal_slide;
     private Servo lclaw, rclaw;
@@ -42,10 +42,10 @@ public class PPTele2ControlSirachaV2 extends OpMode {
     int medium = 5800; for previous spool
     int low = 3550; for previous spool*/
     // 4:7 = circumference of previous spool : circumference of new spool
-    int maxheight = 4400;
-    int highj = 4400;
-    int medj = 3200;
-    int lowj = 1850;
+    int maxheight = 5000;
+    int highj = 3880;
+    int medj = 2760;
+    int lowj = 1680;
     int nodej = 750;
     int ground = 0;
     int liftSelectedPos = 0;
@@ -65,12 +65,12 @@ public class PPTele2ControlSirachaV2 extends OpMode {
      */
 
     double lclaw_open = 0.35;
-    double rclaw_open = 0.25;
+    double rclaw_open = 0.2;
     double lclaw_closed = 0.5+0.045;
     double rclaw_closed = 0.15-0.045;
 
     //double WorkingMotorMax = 0.6825-0.05;
-    double MotorMaxSpeed = 0.8;
+    double MotorMaxSpeed = 0.9;
 
     ArrayList<Boolean> boolArray = new ArrayList<Boolean>();
     int booleanIncrement = 0;
@@ -119,14 +119,14 @@ public class PPTele2ControlSirachaV2 extends OpMode {
     @Override
     public void loop() {
         //switched both signs and plus/minus signs to compensate to go foward properly in this robot
-        double leftFront = Range.clip(gamepad1.left_stick_y + gamepad1.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
-        double leftRear = Range.clip(gamepad1.left_stick_y - gamepad1.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
-        double rightRear = Range.clip(gamepad1.right_stick_y + gamepad1.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
-        double rightFront = Range.clip(gamepad1.right_stick_y - gamepad1.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
+        double leftFront = Range.clip(gamepad2.left_stick_y - gamepad2.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
+        double leftRear = Range.clip(gamepad2.left_stick_y + gamepad2.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
+        double rightRear = Range.clip(gamepad2.right_stick_y - gamepad2.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
+        double rightFront = Range.clip(gamepad2.right_stick_y + gamepad2.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
 
 
         if (leftFront != 0 || leftRear != 0 || rightRear != 0 || rightFront != 0) {
-            if (gamepad1.left_bumper){
+            if (gamepad2.left_bumper){
                 drive_slowspeed = true;
                 drive.setMotorPowers(leftFront*0.4, leftRear*0.4, rightFront*0.4, rightRear*0.4);
             }
@@ -135,14 +135,17 @@ public class PPTele2ControlSirachaV2 extends OpMode {
                 drive_slowspeed =false;
             }
         } else {
-            if (gamepad1.right_trigger != 0) {
+
+            if (gamepad2.right_trigger != 0) {
                 drive.setMotorPowers(-0.7, 0.7, 0.7, -0.7);
-            } else if (gamepad1.left_trigger != 0){
+            } else if (gamepad2.left_trigger != 0){
                 drive.setMotorPowers(0.7, -0.7, -0.7, 0.7);
             }
             else{
                 drive.setMotorPowers(0, 0, 0,0);
             }
+
+
         }
 
 
@@ -222,7 +225,8 @@ public class PPTele2ControlSirachaV2 extends OpMode {
         }
 
         //non-PID control for lift
-        if (gamepad2.dpad_up) {
+
+        if (gamepad1.x) {
             liftPID = false;
             lift_Left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             lift_Right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -231,7 +235,7 @@ public class PPTele2ControlSirachaV2 extends OpMode {
 
             //lclaw.setPosition(lclaw_closed);
             //rclaw.setPosition(rclaw_closed);
-        } else if (gamepad2.dpad_down) {
+        } else if (gamepad1.b) {
             liftPID = false;
             lift_Left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             lift_Right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -246,11 +250,13 @@ public class PPTele2ControlSirachaV2 extends OpMode {
             lift_Right.setPower(0);
         }
 
+
+
         //non-preset PID control for lift
-        if (gamepad2.right_trigger != 0) {
-            liftTargetPos -= 20;
-        } else if (gamepad2.left_trigger != 0) {
+        if (gamepad2.dpad_up) {
             liftTargetPos += 20;
+        } else if (gamepad2.dpad_down) {
+            liftTargetPos -= 20;
         }
 
         //the following 4 if/else if statements tell the robot which stage of the lift
@@ -272,7 +278,7 @@ public class PPTele2ControlSirachaV2 extends OpMode {
             lclaw.setPosition(lclaw_closed);
             rclaw.setPosition(rclaw_closed);
             liftdelay =System.nanoTime();
-        } else if (gamepad2.y) {
+        } else if (gamepad1.y) {
             liftPID = true;
             horizPID = true;
             liftSelectedPos = highj;
@@ -288,7 +294,7 @@ public class PPTele2ControlSirachaV2 extends OpMode {
             lclaw.setPosition(lclaw_closed);
             rclaw.setPosition(rclaw_closed);
             liftdelay =System.nanoTime();
-        } else if (gamepad2.b) {
+        } else if (gamepad1.a) {
             liftTargetPos = ground;
             horizTargetPos = intakePos;
             liftPID = true;
@@ -308,7 +314,7 @@ public class PPTele2ControlSirachaV2 extends OpMode {
             rclaw.setPosition(rclaw_closed);
 
 
-        } else if (gamepad2.left_bumper) {
+        } else if (gamepad1.right_trigger != 0) {
 
             /*
             lclaw.setPosition(Range.clip(lclawpos - 0.01, 0, 1));
@@ -321,7 +327,7 @@ public class PPTele2ControlSirachaV2 extends OpMode {
         }
 
         //failsafe to reset encoder
-        if (gamepad2.share) {
+        if (gamepad1.right_bumper) {
             liftPID = false;
             lift_Right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             lift_Left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
