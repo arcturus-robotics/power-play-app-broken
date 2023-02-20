@@ -141,7 +141,7 @@ public class AlexificentAutonomousLeft extends LinearOpMode
                 //.splineTo(new Vector2d(25.79+2.25, -2.74), Math.toRadians(140.0
                 .strafeRight(4)
                 .forward(55)
-                .turn(Math.toRadians(-46))
+                .turn(Math.toRadians(-48))
                 //.forward(30)
                 //.turn(45)
                 //.forward(10)
@@ -154,16 +154,25 @@ public class AlexificentAutonomousLeft extends LinearOpMode
                 .back(8)
                 .build();
         TrajectorySequence highcone4 = drive.trajectorySequenceBuilder(highcone3.end())
-                .turn(Math.toRadians(46))
-                .back(5)
+                .turn(Math.toRadians(48))
+                .back(2.9)
                 .turn(Math.toRadians(90))
-                .forward(15)
+                .forward(30)
                 .build();
         TrajectorySequence highcone5 = drive.trajectorySequenceBuilder(highcone4.end())
-                .forward(16)
+                .back(30)
+                .turn(Math.toRadians(42))
+                .forward(9)
                 .build();
         TrajectorySequence highcone6 =drive.trajectorySequenceBuilder(highcone5.end())
-                .back(16).build();
+                .back(9)
+                .turn(Math.toRadians(-42))
+                .forward(30)
+                .build();
+        TrajectorySequence highcone7 = drive.trajectorySequenceBuilder(highcone6.end())
+                .back(9)
+                .turn(Math.toRadians(-132))
+                .build();
 
         while (!isStarted() && !isStopRequested()) {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
@@ -229,7 +238,7 @@ public class AlexificentAutonomousLeft extends LinearOpMode
             if (tagOfInterest.id == IDTOI1) {
                 TrajectorySequence idiot = drive.trajectorySequenceBuilder(highcone6.end())
                         .back(10)
-                        .strafeLeft(10)
+                        .strafeLeft(25)
                         .build();
 
             } else if (tagOfInterest.id == IDTOI2) {
@@ -239,7 +248,7 @@ public class AlexificentAutonomousLeft extends LinearOpMode
             } else {
                 TrajectorySequence idiot = drive.trajectorySequenceBuilder(highcone6.end())
                         .back(10)
-                        .strafeRight(10)
+                        .strafeRight(23)
                         .build();
             }
         }
@@ -264,20 +273,38 @@ public class AlexificentAutonomousLeft extends LinearOpMode
         drive.followTrajectorySequence(highcone3);
         sleep(100);
         claw.setPosition(0.9);
-        lift.setTargetPosition(840);
+        lift.setTargetPosition(850);
         lift.setPower(0.9);
-        claw.setPosition(0.6);
+        claw.setPosition(0.7);
         sleep(2000);
         drive.followTrajectorySequence(highcone4);
         sleep(100);
-        drive.followTrajectorySequence(highcone5);
-        sleep(100);
         claw.setPosition(0.9);
-        lift.setTargetPosition(1200);
+        lift.setTargetPosition(2000);
         lift.setPower(0.9);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         sleep(1000);
+        drive.followTrajectorySequence(highcone5);
+        lift.setTargetPosition(100);
+        lift.setPower(0.9);
+        claw.setPosition(0.6);
+        lift.setTargetPosition(700);
+        lift.setPower(0.9);
         drive.followTrajectorySequence(highcone6);
+        sleep(100);
+        claw.setPosition(0.9);
+        lift.setTargetPosition(2000);
+        lift.setPower(0.9);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        sleep(1000);
+        drive.followTrajectorySequence(highcone5);
+        lift.setTargetPosition(100);
+        lift.setPower(0.9);
+        claw.setPosition(0.6);
+        lift.setTargetPosition(700);
+        lift.setPower(0.9);
+        drive.followTrajectorySequence(highcone7);
+
         drive.followTrajectorySequence(idiot);
     }
 

@@ -96,11 +96,12 @@ public class TwoClaw_PPTele2Control extends OpMode {
     
     double MotorMaxSpeed = 0.8;
     
+    //when the claw is facing the back side the left and right names are correct
     //variables for the setting the claw parts to their corresponding positions, lclaw = left claw part, etc.
-    double lclaw_open = 0.6;
+    double lclaw_open = 0;
     double rclaw_open = 0.4;
-    double lclaw_closed = 0.9;
-    double rclaw_closed = 0.9;
+    double lclaw_closed = 0.55;
+    double rclaw_closed = 0.15;
     
     
     // because targetpos is the targeted position of the lift, we need it on the ground during the beginning of driving
@@ -123,7 +124,7 @@ public class TwoClaw_PPTele2Control extends OpMode {
         //  noodle = hardwareMap.get(DcMotorEx.class, "intake");
         
         //duckwheel motor set
-        duckwheel = hardwareMap.get(DcMotorEx.class, "front");
+        //duckwheel = hardwareMap.get(DcMotorEx.class, "front");
          
         //lift motor set
         lift = hardwareMap.get(DcMotorEx.class, "leftShooter");
@@ -226,7 +227,7 @@ public class TwoClaw_PPTele2Control extends OpMode {
                 lift.setPower(0.9);
             }
         }
-        
+
         //planning for a delay
         if (delay != 0) {
             if (System.nanoTime() > 2e+8 + delay) {
@@ -308,13 +309,19 @@ public class TwoClaw_PPTele2Control extends OpMode {
       //gamepad 2's right bumper makes the claw more closed
       //gamepad 2's left bumper makes the claw more open the claw
         if (gamepad2.right_bumper) {
-            lclaw.setPosition(Range.clip(lclawpos+ 0.02, 0.6, 0.9));
-            rclaw.setPosition(Range.clip(rclawpos+ 0.02, 0.4, 0.9));
-            // intaketilt.setPosition(0);
+            /*
+            lclaw.setPosition(Range.clip(lclawpos+ 0.01, 0, 1));
+            rclaw.setPosition(Range.clip(rclawpos+ 0.01, 0, 1));
+             */
+            lclaw.setPosition(lclaw_closed);
+            rclaw.setPosition(rclaw_closed);
         } else if (gamepad2.left_bumper) {
-            lclaw.setPosition(Range.clip(lclawpos - 0.02, 0.6, 0.9));
-            rclaw.setPosition(Range.clip(rclawpos - 0.02, 0.4, 0.9));
-            // intaketilt.setPcosition(1);
+            /*
+            lclaw.setPosition(Range.clip(lclawpos - 0.01, 0, 1));
+            rclaw.setPosition(Range.clip(rclawpos - 0.01, 0, 1));
+             */
+            lclaw.setPosition(lclaw_open);
+            rclaw.setPosition(rclaw_open);
         }
         /*
         else {

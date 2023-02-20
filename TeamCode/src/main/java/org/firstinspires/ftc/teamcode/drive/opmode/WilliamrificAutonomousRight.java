@@ -25,9 +25,6 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 
 import java.util.ArrayList;
 
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -35,6 +32,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @Autonomous
 public class WilliamrificAutonomousRight extends LinearOpMode
 {
@@ -46,8 +45,6 @@ public class WilliamrificAutonomousRight extends LinearOpMode
     private Servo claw;
     private TouchSensor touch_sensor;
 
-    private DistanceSensor sensorRange_left;
-    private DistanceSensor sensorRange_right;
 
     // Lens intrinsics
     // UNITS ARE PIXELS
@@ -72,6 +69,9 @@ public class WilliamrificAutonomousRight extends LinearOpMode
     double Half_bot;
     double needposx;
 
+    private DistanceSensor sensorRange_left;
+    private DistanceSensor sensorRange_right;
+
     AprilTagDetection tagOfInterest = null;
 
     boolean tagNotDetected = false;
@@ -88,7 +88,7 @@ public class WilliamrificAutonomousRight extends LinearOpMode
         sensorRange_right = hardwareMap.get(DistanceSensor.class, "sensor_range_right");
 
         Half_bot = 8;
-        needposx = 38;
+        needposx = -40;
 
         lift.setTargetPosition(0);
         lift.setPower(1);
@@ -97,7 +97,6 @@ public class WilliamrificAutonomousRight extends LinearOpMode
         claw.setPosition(0.9);
 
         touch_sensor = hardwareMap.get(TouchSensor.class, "touch");
-
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
@@ -142,7 +141,7 @@ public class WilliamrificAutonomousRight extends LinearOpMode
                 //.splineTo(new Vector2d(25.79+2.25, -2.74), Math.toRadians(140.0
                 .strafeLeft(4)
                 .forward(55)
-                .turn(Math.toRadians(46))
+                .turn(Math.toRadians(48))
                 //.forward(30)
                 //.turn(45)
                 //.forward(10)
@@ -155,16 +154,24 @@ public class WilliamrificAutonomousRight extends LinearOpMode
                 .back(8)
                 .build();
         TrajectorySequence highcone4 = drive.trajectorySequenceBuilder(highcone3.end())
-                .turn(Math.toRadians(-46))
-                .back(5)
+                .turn(Math.toRadians(-48))
+                .back(2.9)
                 .turn(Math.toRadians(-90))
-                .forward(15)
+                .forward(30)
                 .build();
         TrajectorySequence highcone5 = drive.trajectorySequenceBuilder(highcone4.end())
-                .forward(16)
+                .back(30)
+                .turn(Math.toRadians(-42))
+                .forward(9)
                 .build();
         TrajectorySequence highcone6 =drive.trajectorySequenceBuilder(highcone5.end())
-                .back(16)
+                .back(9)
+                .turn(Math.toRadians(42))
+                .forward(30)
+                .build();
+        TrajectorySequence highcone7 = drive.trajectorySequenceBuilder(highcone6.end())
+                .back(9)
+                .turn(Math.toRadians(132))
                 .build();
 
         while (!isStarted() && !isStopRequested()) {
@@ -231,7 +238,7 @@ public class WilliamrificAutonomousRight extends LinearOpMode
             if (tagOfInterest.id == IDTOI1) {
                 TrajectorySequence idiot = drive.trajectorySequenceBuilder(highcone6.end())
                         .back(10)
-                        .strafeLeft(10)
+                        .strafeLeft(25)
                         .build();
 
             } else if (tagOfInterest.id == IDTOI2) {
@@ -241,7 +248,7 @@ public class WilliamrificAutonomousRight extends LinearOpMode
             } else {
                 TrajectorySequence idiot = drive.trajectorySequenceBuilder(highcone6.end())
                         .back(10)
-                        .strafeRight(10)
+                        .strafeRight(23)
                         .build();
             }
         }
@@ -266,20 +273,38 @@ public class WilliamrificAutonomousRight extends LinearOpMode
         drive.followTrajectorySequence(highcone3);
         sleep(100);
         claw.setPosition(0.9);
-        lift.setTargetPosition(840);
+        lift.setTargetPosition(850);
         lift.setPower(0.9);
-        claw.setPosition(0.6);
+        claw.setPosition(0.7);
         sleep(2000);
         drive.followTrajectorySequence(highcone4);
         sleep(100);
-        drive.followTrajectorySequence(highcone5);
-        sleep(100);
         claw.setPosition(0.9);
-        lift.setTargetPosition(1200);
+        lift.setTargetPosition(2000);
         lift.setPower(0.9);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         sleep(1000);
+        drive.followTrajectorySequence(highcone5);
+        lift.setTargetPosition(100);
+        lift.setPower(0.9);
+        claw.setPosition(0.6);
+        lift.setTargetPosition(700);
+        lift.setPower(0.9);
         drive.followTrajectorySequence(highcone6);
+        sleep(100);
+        claw.setPosition(0.9);
+        lift.setTargetPosition(2000);
+        lift.setPower(0.9);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        sleep(1000);
+        drive.followTrajectorySequence(highcone5);
+        lift.setTargetPosition(100);
+        lift.setPower(0.9);
+        claw.setPosition(0.6);
+        lift.setTargetPosition(700);
+        lift.setPower(0.9);
+        drive.followTrajectorySequence(highcone7);
+
         drive.followTrajectorySequence(idiot);
     }
 
@@ -289,11 +314,11 @@ public class WilliamrificAutonomousRight extends LinearOpMode
         telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
         telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
         telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
-        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
         telemetry.addLine(String.format("touching", touch_sensor.isPressed()));
-        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("left distance", sensorRange_left.getDistance(DistanceUnit.INCH)));
         telemetry.addLine(String.format("right distance", sensorRange_right.getDistance(DistanceUnit.INCH)));
+        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
+        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
 }

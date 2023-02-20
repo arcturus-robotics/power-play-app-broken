@@ -72,64 +72,83 @@ public class TrajectorySequenceTesting extends LinearOpMode
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         lift.setPower(0.9);
 
-
         claw.setPosition(0.9);
+
+//        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+//        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+//        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
+//        camera.setPipeline(aprilTagDetectionPipeline);
+//        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+//        {
+//            @Override
+//            public void onOpened()
+//            {
+//                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
+//            }
+//
+//            @Override
+//            public void onError(int errorCode)
+//            {
+//
+//            }
+//        });
+
         telemetry.setMsTransmissionInterval(50);
         //adb connect 192.168.43.1:5555
         //very edge of tile on the left edge
-        TrajectorySequence highcone1 = drive.trajectorySequenceBuilder(startinglocatiion)
-                //.splineTo(new Vector2d(-35.42, -36.21), Math.toRadians(90.00))
-                //.splineTo(new Vector2d(25.79+2.25, -2.74), Math.toRadians(140.0
-                .strafeRight(4)
-                .forward(53.5)
-                .turn(Math.toRadians(-46))
-                //.forward(30)
-                //.turn(45)
-                //.forward(10)
-                .build();
+        while (!isStarted() && !isStopRequested()) {
+        }
+            TrajectorySequence highcone1 = drive.trajectorySequenceBuilder(startinglocatiion)
+                    //.splineTo(new Vector2d(-35.42, -36.21), Math.toRadians(90.00))
+                    //.splineTo(new Vector2d(25.79+2.25, -2.74), Math.toRadians(140.0
+                    .strafeRight(4)
+                    .forward(55)
+                    .turn(Math.toRadians(-52))
+                    //.forward(30)
+                    //.turn(45)
+                    //.forward(10)
+                    .build();
 
-        TrajectorySequence highcone2 = drive.trajectorySequenceBuilder(highcone1.end())
-                .forward(8)
-                //.forward(7)
-                .build();
-        TrajectorySequence highcone3 = drive.trajectorySequenceBuilder(highcone2.end())
-                .back(8)
-                //.back(7)
-                .build();
-        TrajectorySequence highcone4 = drive.trajectorySequenceBuilder(highcone3.end())
-                .turn(Math.toRadians(46))
-                .back(5)
-                .turn(Math.toRadians(90))
-                .forward(15+15)
-                .build();
-        TrajectorySequence highcone6 =drive.trajectorySequenceBuilder(highcone4.end())
-                        .back(16).build();
-        drive.followTrajectorySequence(highcone1);
-        lift.setTargetPosition(4400);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lift.setPower(0.9);
-        sleep(3000);
-        drive.followTrajectorySequence(highcone2);
-        lift.setTargetPosition(4000);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lift.setPower(0.9);
-        sleep(500);
-        claw.setPosition(0.6);
-        sleep(100);
-        drive.followTrajectorySequence(highcone3);
-        sleep(100);
+            TrajectorySequence highcone2 = drive.trajectorySequenceBuilder(highcone1.end())
+                    .forward(12)
+                    //.forward(7)
+                    .build();
+            TrajectorySequence highcone3 = drive.trajectorySequenceBuilder(highcone2.end())
+                    .back(11)
+                    .turn(Math.toRadians(52))
+                    .back(5.2)
+                    .turn(Math.toRadians(90))
+                    .forward(29)
+                    //.back(7)
+                    .build();
+            TrajectorySequence smallScore =drive.trajectorySequenceBuilder(highcone3.end())
+                    .back(26.5)
+                    .turn(Math.toRadians(42))
+                    .forward(10)
+                    .build();
+
+            drive.followTrajectorySequence(highcone1);
+            lift.setTargetPosition(4400);
+            lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            lift.setPower(0.9);
+            sleep(3000);
+            drive.followTrajectorySequence(highcone2);
+            lift.setTargetPosition(4000);
+            lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            lift.setPower(0.9);
+            sleep(500);
+            claw.setPosition(0.68);
         lift.setTargetPosition(850);
         lift.setPower(0.9);
-        claw.setPosition(0.7);
-        sleep(2000);
-        drive.followTrajectorySequence(highcone4);
-        sleep(100);
-        claw.setPosition(0.9);
-        sleep(1000);
-        lift.setTargetPosition(2000);
-        lift.setPower(0.9);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        sleep(1000);
-        drive.followTrajectorySequence(highcone6);
+            drive.followTrajectorySequence(highcone3);
+            claw.setPosition(0.9);
+            sleep(1000);
+            lift.setTargetPosition(1850);
+            lift.setPower(0.9);
+            lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            sleep(1000);
+            drive.followTrajectorySequence(smallScore);
+            claw.setPosition(0.68);
     }
 }

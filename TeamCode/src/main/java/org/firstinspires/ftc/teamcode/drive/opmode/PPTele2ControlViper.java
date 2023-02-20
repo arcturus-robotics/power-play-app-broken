@@ -26,9 +26,7 @@ import java.util.ArrayList;
 @TeleOp
 public class PPTele2ControlViper extends OpMode {
     // variables are set
-    private Boolean motortoggle = false;
     private ArcturusDriveNoRR drive;
-    private DcMotorEx duckwheel;
     private DcMotorEx lift;
     private DcMotorEx lf;
     private DcMotorEx rf;
@@ -68,7 +66,6 @@ public class PPTele2ControlViper extends OpMode {
         drive = new ArcturusDriveNoRR(hardwareMap);
 
         //  noodle = hardwareMap.get(DcMotorEx.class, "intake");
-        duckwheel = hardwareMap.get(DcMotorEx.class, "front");
 
         lift = hardwareMap.get(DcMotorEx.class, "leftShooter");
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

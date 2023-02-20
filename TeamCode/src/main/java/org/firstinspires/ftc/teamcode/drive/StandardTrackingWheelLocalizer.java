@@ -34,7 +34,7 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     /*
     LATERAL_DISTANCE: 13.3125 measured, 13.039767 calculated or 13.035990
      */
-    public static double LATERAL_DISTANCE = 13; // in; distance between the left and right wheels
+    public static double LATERAL_DISTANCE = 13.125;// in; distance between the left and right wheels
 
     /*
        Our robot: Length -> 17" ; Width -> 10 3/8"
@@ -78,7 +78,7 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
 
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
 
-        leftEncoder.setDirection(Encoder.Direction.REVERSE);
+        //leftEncoder.setDirection(Encoder.Direction.REVERSE);
         rightEncoder.setDirection(Encoder.Direction.REVERSE);
     }
 

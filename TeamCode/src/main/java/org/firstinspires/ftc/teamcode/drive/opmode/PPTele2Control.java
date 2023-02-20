@@ -28,7 +28,6 @@ public class PPTele2Control extends OpMode {
     // variables are set
 
     private ArcturusDriveNoRR drive;
-    private DcMotorEx duckwheel;
     private DcMotorEx lift;
     private DcMotorEx lf;
     private DcMotorEx rf;
@@ -74,7 +73,6 @@ public class PPTele2Control extends OpMode {
         drive = new ArcturusDriveNoRR(hardwareMap);
 
         //  noodle = hardwareMap.get(DcMotorEx.class, "intake");
-        duckwheel = hardwareMap.get(DcMotorEx.class, "front");
 
         lift = hardwareMap.get(DcMotorEx.class, "leftShooter");
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -105,8 +103,8 @@ public class PPTele2Control extends OpMode {
     @Override
     public void loop() {
 
-        double leftFront = -Range.clip(gamepad1.left_stick_y - gamepad1.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
-        double leftRear = -Range.clip(gamepad1.left_stick_y + gamepad1.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
+        double leftFront = Range.clip(gamepad1.left_stick_y - gamepad1.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
+        double leftRear = Range.clip(gamepad1.left_stick_y + gamepad1.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
         double rightRear = -Range.clip(gamepad1.right_stick_y - gamepad1.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
         double rightFront = -Range.clip(gamepad1.right_stick_y + gamepad1.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
 //        if(gamepad1.right_bumper && motortoggle==false){
@@ -140,9 +138,9 @@ public class PPTele2Control extends OpMode {
             }
         } else {
             if (gamepad1.right_trigger != 0) {
-                drive.setMotorPowers(0.7, -0.7, -0.7, 0.7);
+                drive.setMotorPowers(-0.7, 0.7, -0.7, 0.7);
             } else if (gamepad1.left_trigger != 0){
-                drive.setMotorPowers(-0.7, 0.7, 0.7, -0.7);
+                drive.setMotorPowers(0.7, -0.7, 0.7, -0.7);
             }
              else{
                  drive.setMotorPowers(0, 0, 0,0);
