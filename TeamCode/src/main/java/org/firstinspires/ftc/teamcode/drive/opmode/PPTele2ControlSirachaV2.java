@@ -11,7 +11,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
-import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
+import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRRViper;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 
 
 import java.util.ArrayList;
@@ -23,13 +26,18 @@ import java.util.ArrayList;
  */
 @TeleOp
 public class PPTele2ControlSirachaV2 extends OpMode {
-    private ArcturusDriveNoRR drive;
+    private ArcturusDriveNoRRViper drive;
     private DcMotorEx lift_Right, lift_Left, horizontal_slide;
     private Servo lclaw, rclaw;
     //private Touch touch;
 
+    private DistanceSensor liftsensor;
+
     long liftdelay = 0;
     long horizdelay = 0;
+
+    double resetdelay = 0;
+    double resetlimit = 2e+3;
 
     double lclawpos, rclawpos;
     double liftpos_right, liftpos_left, horizpos;
@@ -43,16 +51,20 @@ public class PPTele2ControlSirachaV2 extends OpMode {
     int low = 3550; for previous spool*/
     // 4:7 = circumference of previous spool : circumference of new spool
     int maxheight = 4400;
-    int highj = 4400;
-    int medj = 3200;
-    int lowj = 1850;
+    int highj = 4020;
+    int medj = 2940;
+    int lowj = 1820;
     int nodej = 750;
     int ground = 0;
+
+    double liftResetHeight = 7.7;
+
+    double currentliftheight;
     int liftSelectedPos = 0;
     int liftTargetPos = ground;
 
-    int maxhoriz = 2000;
-    int scoringPos = 1600;
+    int maxhoriz = 2100;
+    int scoringPos = 1900;
     int intakePos = 0;
     int horizSelectedPos = 0;
     int horizTargetPos = intakePos;
@@ -64,10 +76,10 @@ public class PPTele2ControlSirachaV2 extends OpMode {
     double rclaw_closed = 0.22-0.045;
      */
 
-    double lclaw_open = 0.35;
-    double rclaw_open = 0.25;
-    double lclaw_closed = 0.5+0.045;
-    double rclaw_closed = 0.15-0.045;
+    double lclaw_open = 0.44;
+    double rclaw_open = 0.3;
+    double lclaw_closed = 0.544+0.045;
+    double rclaw_closed = 0.26-0.045;
 
     //double WorkingMotorMax = 0.6825-0.05;
     double MotorMaxSpeed = 0.8;
@@ -75,10 +87,12 @@ public class PPTele2ControlSirachaV2 extends OpMode {
     ArrayList<Boolean> boolArray = new ArrayList<Boolean>();
     int booleanIncrement = 0;
 
+    int numresets = 0;
+
     @Override
 
     public void init() {
-        drive = new ArcturusDriveNoRR(hardwareMap);
+        drive = new ArcturusDriveNoRRViper(hardwareMap);
         lift_Right = hardwareMap.get(DcMotorEx.class, "rightShooter");
         lift_Right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lift_Right.setTargetPosition(liftTargetPos);
@@ -106,6 +120,8 @@ public class PPTele2ControlSirachaV2 extends OpMode {
         lclaw.setPosition(lclaw_closed);
         rclaw.setPosition(rclaw_closed);
 
+        liftsensor = hardwareMap.get(DistanceSensor.class, "liftDist");
+
         // touch = hardwareMap.get(TouchSensor.class, "Touch");
 
     }
@@ -119,10 +135,10 @@ public class PPTele2ControlSirachaV2 extends OpMode {
     @Override
     public void loop() {
         //switched both signs and plus/minus signs to compensate to go foward properly in this robot
-        double leftFront = Range.clip(gamepad1.left_stick_y + gamepad1.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
-        double leftRear = Range.clip(gamepad1.left_stick_y - gamepad1.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
-        double rightRear = Range.clip(gamepad1.right_stick_y + gamepad1.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
-        double rightFront = Range.clip(gamepad1.right_stick_y - gamepad1.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
+        double leftFront = -Range.clip(gamepad1.left_stick_y - gamepad1.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
+        double leftRear = -Range.clip(gamepad1.left_stick_y + gamepad1.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
+        double rightRear = -Range.clip(gamepad1.right_stick_y - gamepad1.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
+        double rightFront = -Range.clip(gamepad1.right_stick_y + gamepad1.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
 
 
         if (leftFront != 0 || leftRear != 0 || rightRear != 0 || rightFront != 0) {
@@ -136,9 +152,9 @@ public class PPTele2ControlSirachaV2 extends OpMode {
             }
         } else {
             if (gamepad1.right_trigger != 0) {
-                drive.setMotorPowers(-0.7, 0.7, 0.7, -0.7);
-            } else if (gamepad1.left_trigger != 0){
                 drive.setMotorPowers(0.7, -0.7, -0.7, 0.7);
+            } else if (gamepad1.left_trigger != 0){
+                drive.setMotorPowers(-0.7, 0.7, 0.7, -0.7);
             }
             else{
                 drive.setMotorPowers(0, 0, 0,0);
@@ -332,6 +348,7 @@ public class PPTele2ControlSirachaV2 extends OpMode {
         liftpos_right = lift_Right.getCurrentPosition();
         liftpos_left = lift_Left.getCurrentPosition();
         horizpos = horizontal_slide.getCurrentPosition();
+        currentliftheight = liftsensor.getDistance(DistanceUnit.INCH);
 
         telemetry.addData("vertical stay in place", liftPID);
         telemetry.addData("lift pos right", liftpos_right);
@@ -341,9 +358,12 @@ public class PPTele2ControlSirachaV2 extends OpMode {
         telemetry.addData("lclaw pos", lclawpos);
         telemetry.addData("rclaw pos", rclawpos);
         telemetry.addData("Is slow?", drive_slowspeed);
+        telemetry.addData("Lift Distance Height", currentliftheight);
         telemetry.update();
 
         booleanIncrement = 0;
+
+        // if liftResetHeight something, then reset encoders
     }
 
     @Override

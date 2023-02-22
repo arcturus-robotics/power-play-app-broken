@@ -14,3 +14,4 @@ repositories {
 dependencies {
     implementation 'com.github.NoahBres:MeepMeep:2.0.2'
 }
+//javapath=((java -verbose -version | ? {$_ -match "Opened" }).replace("[Opened ","")).replace("\lib\rt.jar]","")
