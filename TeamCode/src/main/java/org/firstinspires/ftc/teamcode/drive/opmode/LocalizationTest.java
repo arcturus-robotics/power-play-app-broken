@@ -6,12 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDriveV2;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
 /**
@@ -37,7 +36,7 @@ public class LocalizationTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        SampleMecanumDriveV2 drive = new SampleMecanumDriveV2(hardwareMap);
         leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "intake"));
         rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightShooter"));
         backEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "front"));

@@ -46,10 +46,6 @@ public class PPTele2ControlSirachaV2 extends OpMode {
     boolean horizPID = true;
     boolean drive_slowspeed = false;
 
-    /*int high = 7900; for previous spool
-    int medium = 5800; for previous spool
-    int low = 3550; for previous spool*/
-    // 4:7 = circumference of previous spool : circumference of new spool
     int maxheight = 4400;
     int highj = 4020;
     int medj = 2940;
@@ -76,10 +72,10 @@ public class PPTele2ControlSirachaV2 extends OpMode {
     double rclaw_closed = 0.22-0.045;
      */
 
-    double lclaw_open = 0.44;
-    double rclaw_open = 0.3;
+    double lclaw_open = 0.458;
+    double rclaw_open = 0.21;
     double lclaw_closed = 0.544+0.045;
-    double rclaw_closed = 0.26-0.045;
+    double rclaw_closed = 0.19-0.045;
 
     //double WorkingMotorMax = 0.6825-0.05;
     double MotorMaxSpeed = 0.8;

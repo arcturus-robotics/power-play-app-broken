@@ -12,31 +12,40 @@ public class MeepMeepTestingV2 {
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(26.2, 26.2, Math.toRadians(249.761234517728*0.9), Math.toRadians(184.02607784577722*0.7), 15.76)
+                .setConstraints(40, 40, Math.toRadians(249.761234517728*0.9), Math.toRadians(184.02607784577722*0.7), 15.76)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-38, -64.28125, Math.toRadians(90)))
-                                .strafeLeft(4)
-                                .forward(25)
-                                .strafeRight(8)
-                                .forward(25)
-                                .strafeLeft(6)
-                                .turn(-95)
+                                .strafeRight(4)
+                                .forward(50)
+                                .turn(Math.toRadians(-35))
+                                .turn(Math.toRadians(-(90-35)))
+                                .back(27)
+                                .forward(8)
+                                .turn(Math.toRadians(-60))
+                                .turn(Math.toRadians(60))
+                                .back(8)
+                                .forward(8)
+                                .turn(Math.toRadians(-60))
+                                .turn(Math.toRadians(60))
+                                .back(8)
+                                .forward(8)
+                                .turn(Math.toRadians(-60))
+                                .turn(Math.toRadians(60))
+                                .back(8)
+                                .forward(8)
+                                .turn(Math.toRadians(-60))
+                                .turn(Math.toRadians(60))
+                                .back(5)
+                                .strafeRight(21)
 
-                                //.turn(Math.toRadians(-45))
-                                //.forward(28)
-                                //.back(28)
-                                //.turn(Math.toRadians(-135))
-                                /*
-                                .splineTo(new Vector2d(35.42, -36.21), Math.toRadians(90.00))
-                                .splineTo(new Vector2d(26.0104, -2.8289), Math.toRadians(138))
-                                .back(12)
+                                //for Parking 1, this is fine
 
-                                //.turn(Math.toRadians(42))
-                                .back(1)
-                                .turn(Math.toRadians(-48))
-                                .back(20)
+                                // for parking 2,add
+                                 //.forward(22)
 
-                                 */
+                                //for Parking 3,add
+//                                 .forward(46)
+
                                 .build()
                 );
 

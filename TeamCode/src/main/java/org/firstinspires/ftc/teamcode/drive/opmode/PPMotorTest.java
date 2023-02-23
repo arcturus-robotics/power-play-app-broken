@@ -100,6 +100,7 @@ public class PPMotorTest extends OpMode {
         else {
             RLpower =0;
         }
+
         drive.setMotorPowers(leftFront,leftRear,rightFront,rightRear);
         lift_Left.setPower(LLpower);
         lift_Right.setPower(RLpower);

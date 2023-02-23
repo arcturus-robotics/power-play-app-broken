@@ -9,7 +9,6 @@ import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
@@ -48,8 +47,6 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstantsV2.encoderTicks
 import static org.firstinspires.ftc.teamcode.drive.DriveConstantsV2.kA;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstantsV2.kStatic;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstantsV2.kV;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
  */
@@ -159,7 +156,7 @@ public class SampleMecanumDriveV2 extends MecanumDrive {
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 
-        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+        setLocalizer(new OdoLocalizerSirachaV2(hardwareMap));
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
 

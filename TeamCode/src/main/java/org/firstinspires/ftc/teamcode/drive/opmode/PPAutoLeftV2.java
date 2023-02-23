@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDriveV2;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -10,22 +10,12 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
 
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
+
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-import com.acmerobotics.roadrunner.trajectory.DisplacementMarker;
-import com.acmerobotics.roadrunner.trajectory.TemporalMarker;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-
-import java.util.ArrayList;
 
 
 @Autonomous
@@ -82,7 +72,7 @@ public class PPAutoLeftV2 extends LinearOpMode
     @Override
     public void runOpMode()
     {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        SampleMecanumDriveV2 drive = new SampleMecanumDriveV2(hardwareMap);
         drive.setPoseEstimate(startinglocatiion);
         lift_Right = hardwareMap.get(DcMotorEx.class, "rightShooter");
         lift_Right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -139,38 +129,41 @@ public class PPAutoLeftV2 extends LinearOpMode
                 //.splineTo(new Vector2d(-35.42, -36.21), Math.toRadians(90.00))
                 //.splineTo(new Vector2d(25.79+2.25, -2.74), Math.toRadians(140.0
                 .strafeRight(4)
-                .forward(55)
-                .turn(Math.toRadians(-52))
+                .forward(50)
+                .turn(Math.toRadians(-35))
                 //.forward(30)
                 //.turn(45)
                 //.forward(10)
                 .build();
-
         TrajectorySequence highcone2 = drive.trajectorySequenceBuilder(highcone1.end())
-                .forward(12)
-                //.forward(7)
+                .turn(Math.toRadians(-(90-35)))
+                .back(27)
                 .build();
         TrajectorySequence highcone3 = drive.trajectorySequenceBuilder(highcone2.end())
-                .back(11)
-                .turn(Math.toRadians(52))
-                .back(5.2)
-                .turn(Math.toRadians(-90))
-                .back(29)
-                //.back(7)
+                .forward(8)
+                .turn(Math.toRadians(-60))
                 .build();
-
         drive.followTrajectorySequence(highcone1);
         liftSelectedPos = highj;
         horizSelectedPos = scoringPos;
-        lclaw.setPosition(lclaw_closed);
-        rclaw.setPosition(rclaw_closed);
-        sleep(10000);
-        drive.followTrajectorySequence(highcone2);
+        sleep(5000);
         lclaw.setPosition(lclaw_open);
         rclaw.setPosition(rclaw_open);
+        sleep(500);
+        liftSelectedPos=lowj-1220;
+        horizSelectedPos=intakePos;
+        drive.followTrajectorySequence(highcone2);
+        lclaw.setPosition(lclaw_closed);
+        rclaw.setPosition(rclaw_closed);
+        sleep(500);
+        liftSelectedPos=lowj;
+        horizSelectedPos=scoringPos;
+        sleep(5000);
         drive.followTrajectorySequence(highcone3);
-        liftSelectedPos = 1400;
-        drive.followTrajectorySequence(highcone3);
-
+        lclaw.setPosition(lclaw_open);
+        rclaw.setPosition(rclaw_open);
+        sleep(500);
+        liftSelectedPos=lowj-300;
+        horizSelectedPos=intakePos;
     }
 }
