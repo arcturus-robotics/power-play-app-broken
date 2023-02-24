@@ -133,9 +133,15 @@ public class TrajectorySequenceTestingV2 extends LinearOpMode
         //very edge of tile on the left edge
         while (!isStarted() && !isStopRequested()) {
         }
-            TrajectorySequence highcone1 = drive.trajectorySequenceBuilder(startinglocatiion)
-            .strafeRight(4)
-                    .forward(55)
-                    .build();
+        TrajectorySequence highcone1 = drive.trajectorySequenceBuilder(startinglocatiion)
+                //.splineTo(new Vector2d(-35.42, -36.21), Math.toRadians(90.00))
+                //.splineTo(new Vector2d(25.79+2.25, -2.74), Math.toRadians(140.0
+                .strafeRight(4)
+                .forward(55)
+                .turn(Math.toRadians(-52))
+                //.forward(30)
+                //.turn(45)
+                //.forward(10)
+                .build();
     }
 }

@@ -188,6 +188,9 @@ public class PPTele2ControlSirachaV2 extends OpMode {
             horizontal_slide.setTargetPosition(horizTargetPos);
             horizontal_slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             horizontal_slide.setPower(1);
+
+            lclaw.setPosition(lclaw_closed);
+            rclaw.setPosition(rclaw_closed);
         }
 
         //used for waiting for claw to close before lift up
@@ -228,9 +231,13 @@ public class PPTele2ControlSirachaV2 extends OpMode {
 
         if (gamepad2.dpad_left){
             horizTargetPos += -20;
+            lclaw.setPosition(lclaw_closed);
+            rclaw.setPosition(rclaw_closed);
         }
         else if (gamepad2.dpad_right){
             horizTargetPos += 20;
+            lclaw.setPosition(lclaw_closed);
+            rclaw.setPosition(rclaw_closed);
         }
 
         //non-PID control for lift
@@ -305,6 +312,8 @@ public class PPTele2ControlSirachaV2 extends OpMode {
             horizTargetPos = intakePos;
             liftPID = true;
             horizPID = true;
+            lclaw.setPosition(lclaw_closed);
+            rclaw.setPosition(rclaw_closed);
         }
 
         //controlling claw
@@ -351,6 +360,7 @@ public class PPTele2ControlSirachaV2 extends OpMode {
         telemetry.addData("lift target", liftTargetPos);
         telemetry.addData("lift pos left", liftpos_left);
         telemetry.addData("horiz slide pos", horizpos);
+        telemetry.addData("hoirz target", horizTargetPos);
         telemetry.addData("lclaw pos", lclawpos);
         telemetry.addData("rclaw pos", rclawpos);
         telemetry.addData("Is slow?", drive_slowspeed);

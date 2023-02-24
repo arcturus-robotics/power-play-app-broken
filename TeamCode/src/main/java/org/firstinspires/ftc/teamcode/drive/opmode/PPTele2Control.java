@@ -38,7 +38,8 @@ public class PPTele2Control extends OpMode {
 
 //    TouchSensor touch;
 
-    double clawpos;
+    double clawClosed = 0.98;
+    double clawOpen = 0.74;
     double liftpos;
 
     boolean PID = true;
@@ -147,7 +148,6 @@ public class PPTele2Control extends OpMode {
              }
         }
 
-        clawpos = claw.getPosition();
         liftpos = lift.getCurrentPosition();
 
         // claw set and lifted to a position
@@ -235,10 +235,10 @@ public class PPTele2Control extends OpMode {
 
 
         if (gamepad2.right_bumper) {
-            claw.setPosition(Range.clip(clawpos + 0.02, 0.68, 0.9));
+            claw.setPosition(clawClosed);
             // intaketilt.setPosition(0);
         } else if (gamepad2.left_bumper) {
-            claw.setPosition(Range.clip(clawpos - 0.02, 0.68, 0.9));
+            claw.setPosition(clawOpen);
             // intaketilt.setPcosition(1);
         }
         /*
@@ -255,7 +255,6 @@ public class PPTele2Control extends OpMode {
         // telemetry.addData("duckspeed",duckspeed);
         telemetry.addData("lift stay in place", PID);
         telemetry.addData("lift pos", liftpos);
-        telemetry.addData("claw pos", clawpos);
 //        telemetry.addData("Steve", 999);
 //        telemetry.addData("Is toggled?", motortoggle);
         telemetry.addData("Is slow?", slowspeed);

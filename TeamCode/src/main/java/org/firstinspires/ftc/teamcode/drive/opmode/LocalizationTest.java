@@ -37,19 +37,19 @@ public class LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDriveV2 drive = new SampleMecanumDriveV2(hardwareMap);
-        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "intake"));
-        rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightShooter"));
-        backEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "front"));
+        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftPod"));
+        rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightPod"));
+        backEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "backPod"));
 
         leftDistance= hardwareMap.get(DistanceSensor.class, "sensor_range_left");
         rightDistance = hardwareMap.get(DistanceSensor.class, "sensor_range_right");
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        Pose2d closeRedTerminal = new Pose2d(-63.5, -64.28125, Math.toRadians(90));
+        Pose2d closeRedTerminal = new Pose2d(-72+2.75+10.5/2, -72+8.5, Math.toRadians(90));
         Pose2d startinglocatiion = new Pose2d(0, 0, Math.toRadians(90));
 
-        drive.setPoseEstimate(startinglocatiion);
+        drive.setPoseEstimate(closeRedTerminal);
 
         waitForStart();
 

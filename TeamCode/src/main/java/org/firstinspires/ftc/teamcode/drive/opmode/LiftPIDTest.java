@@ -22,6 +22,7 @@ import java.util.ArrayList;
 public class LiftPIDTest extends OpMode {
     private DcMotorEx lift_Right, lift_Left;
     int liftpos = 0;
+    boolean stable = false;
 
     @Override
     public void init() {
@@ -61,6 +62,27 @@ public class LiftPIDTest extends OpMode {
         if (liftpos < 0) {
             liftpos = 0;
         }
+        /*
+        if(gamepad1.b){
+            lift_Right.setPower(1);
+            lift_Left.setPower(1);
+        }
+        else if(gamepad1.x){
+            lift_Right.setPower(-1);
+            lift_Left.setPower(-1);
+        }
+        else {
+            if(gamepad1.right_stick_button){
+                stable = !stable;
+            }
+        }
+
+        if(stable){
+            lift_Right.setPower(0.3);
+            lift_Left.setPower(0.3);
+        }
+
+         */
 
         telemetry.addData("left lift pos", lift_Left.getCurrentPosition());
         telemetry.addData("right lift pos", lift_Right.getCurrentPosition());

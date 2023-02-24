@@ -35,7 +35,7 @@ public class OdoLocalizerSirachaV2 extends ThreeTrackingWheelLocalizer {
     LATERAL_DISTANCE: 13.3125 measured, 13.039767 calculated or 13.035990
      */
     //Important: maybe change value with turning
-    public static double LATERAL_DISTANCE = 13.125;// in; distance between the left and right wheels
+    public static double LATERAL_DISTANCE = 12.875;// in; distance between the left and right wheels
 
     /*
        Our robot: Length -> 17" ; Width -> 10 3/8"
@@ -43,7 +43,7 @@ public class OdoLocalizerSirachaV2 extends ThreeTrackingWheelLocalizer {
        Left Odometry Pod Measurement -> 2 3/8" wide
        Right Odometry Pod Measurement -> 2 11/16" wide
      */
-    public static double FORWARD_OFFSET = -7.0625; // in; offsedont worry about memorit of the lateral wheel
+    public static double FORWARD_OFFSET = -8.5+1.5; // in; offsedont worry about memorit of the lateral wheel
 
     /*
         X_MULTIPLIER TEST DATA (TARGET 96 in): 97.987464, 98.091533, 98.060342
@@ -75,9 +75,9 @@ public class OdoLocalizerSirachaV2 extends ThreeTrackingWheelLocalizer {
                 new Pose2d(FORWARD_OFFSET, 0, Math.toRadians(90)) // front
         ));
 
-        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftRear"));
-        rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightRear"));
-        frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightFront"));
+        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftPod"));
+        rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightPod"));
+        frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "backPod"));
 
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
 

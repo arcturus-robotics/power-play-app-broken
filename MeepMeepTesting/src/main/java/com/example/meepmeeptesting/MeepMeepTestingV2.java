@@ -15,6 +15,7 @@ public class MeepMeepTestingV2 {
                 .setConstraints(40, 40, Math.toRadians(249.761234517728*0.9), Math.toRadians(184.02607784577722*0.7), 15.76)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-38, -64.28125, Math.toRadians(90)))
+                                /* for robot v2
                                 .strafeRight(4)
                                 .forward(50)
                                 .turn(Math.toRadians(-35))
@@ -37,6 +38,23 @@ public class MeepMeepTestingV2 {
                                 .turn(Math.toRadians(60))
                                 .back(5)
                                 .strafeRight(21)
+
+                                 */
+
+                                .strafeRight(4)
+                                .forward(55)
+                                .turn(Math.toRadians(-52))
+                                .forward(12)
+                                .back(11)
+                                .turn(Math.toRadians(52))
+                                .back(5.2)
+                                .turn(Math.toRadians(90))
+                                .forward(29)
+                                .back(26.5)
+                                .turn(Math.toRadians(42))
+                                .forward(10)
+
+
 
                                 //for Parking 1, this is fine
 

@@ -136,10 +136,10 @@ public class PPTeleV2Fallback extends OpMode {
     @Override
     public void loop() {
         //switched both signs and plus/minus signs to compensate to go foward properly in this robot
-        double leftFront = -Range.clip(gamepad1.left_stick_y - gamepad1.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
-        double leftRear = -Range.clip(gamepad1.left_stick_y + gamepad1.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
-        double rightRear = -Range.clip(gamepad1.right_stick_y - gamepad1.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
-        double rightFront = -Range.clip(gamepad1.right_stick_y + gamepad1.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
+        double rightFront = Range.clip(gamepad1.left_stick_y + gamepad1.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
+        double rightRear = Range.clip(gamepad1.left_stick_y - gamepad1.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
+        double leftRear = Range.clip(gamepad1.right_stick_y + gamepad1.left_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
+        double leftFront = Range.clip(gamepad1.right_stick_y - gamepad1.right_stick_x, -MotorMaxSpeed, MotorMaxSpeed);
 
 
         if (leftFront != 0 || leftRear != 0 || rightRear != 0 || rightFront != 0) {
@@ -153,9 +153,9 @@ public class PPTeleV2Fallback extends OpMode {
             }
         } else {
             if (gamepad1.right_trigger != 0) {
-                drive.setMotorPowers(0.7, -0.7, -0.7, 0.7);
-            } else if (gamepad1.left_trigger != 0){
                 drive.setMotorPowers(-0.7, 0.7, 0.7, -0.7);
+            } else if (gamepad1.left_trigger != 0){
+                drive.setMotorPowers(0.7, -0.7, -0.7, 0.7);
             }
             else{
                 drive.setMotorPowers(0, 0, 0,0);
