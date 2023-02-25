@@ -35,7 +35,7 @@ public class OdoLocalizerSirachaV2 extends ThreeTrackingWheelLocalizer {
     LATERAL_DISTANCE: 13.3125 measured, 13.039767 calculated or 13.035990
      */
     //Important: maybe change value with turning
-    public static double LATERAL_DISTANCE = 12.875;// in; distance between the left and right wheels
+    public static double LATERAL_DISTANCE = 13.0847;// in; distance between the left and right wheels
 
     /*
        Our robot: Length -> 17" ; Width -> 10 3/8"

@@ -55,7 +55,8 @@ public class TwoConeVisRight_NotWorking extends LinearOpMode
 
     double LeftDist;
     double RightDist;
-    double Half_bot = 10.5/2;
+    double half_bot = 10.5/2;
+    double odowidth = 2.75;
     double distsenswidth = 0.65;
     double numloops = 0;
     double distsum = 0;
@@ -112,7 +113,7 @@ public class TwoConeVisRight_NotWorking extends LinearOpMode
         //adb connect 192.168.43.1:5555
         //very edge of tile on the right edge
 
-        Pose2d startinglocatiion = new Pose2d(31 - 0.125, -64.28125, Math.toRadians(90));
+        Pose2d startinglocatiion = new Pose2d(48-half_bot-odowidth, -72+8.5, Math.toRadians(270));
         drive.setPoseEstimate(startinglocatiion);
 
         TrajectorySequence beginning = drive.trajectorySequenceBuilder(startinglocatiion)
@@ -262,15 +263,14 @@ public class TwoConeVisRight_NotWorking extends LinearOpMode
             drive.followTrajectorySequence(parkingzone2);
         }
 
-         */
-        /*
-        CODE FOR TAG NOT DETECTED
-         */
+
 
         lift.setTargetPosition(0);
         lift.setPower(1);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         sleep(1000);
+
+         */
     }
 
     void tagToTelemetry(AprilTagDetection detection)

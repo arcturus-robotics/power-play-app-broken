@@ -7,14 +7,22 @@ import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class MeepMeepTestingV2 {
+
     public static void main(String[] args) {
+        double half_bot = 10.375/2;
+        double odowidth = 2.75;
+        double startx = 24+half_bot;
+        double starty = -72+8.5;
         MeepMeep meepMeep = new MeepMeep(600);
+        //center of cone 6.5-5.1875 from left chassis
+        // center of  cone 13.5 from bottom of chais
+        //cone scoring location is 1.3125 on left, 5 in above scoring rotation
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(40, 40, Math.toRadians(249.761234517728*0.9), Math.toRadians(184.02607784577722*0.7), 15.76)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-38, -64.28125, Math.toRadians(90)))
+                        drive.trajectorySequenceBuilder(new Pose2d(starty, starty, Math.toRadians(90)))
                                 /* for robot v2
                                 .strafeRight(4)
                                 .forward(50)
@@ -41,19 +49,16 @@ public class MeepMeepTestingV2 {
 
                                  */
 
-                                .strafeRight(4)
-                                .forward(55)
-                                .turn(Math.toRadians(-52))
-                                .forward(12)
-                                .back(11)
-                                .turn(Math.toRadians(52))
-                                .back(5.2)
-                                .turn(Math.toRadians(90))
-                                .forward(29)
-                                .back(26.5)
-                                .turn(Math.toRadians(42))
-                                .forward(10)
+                                //.lineToConstantHeading(new Vector2d(36, -48))
+//                                .lineTo(new Vector2d(36, -48+27), Math.toRadians(90+45))
+                                //.back(27)
+                                //.lineToLinearHeading(new Pose2d(24+4.45,0-2.616,Math.toRadians(90+45)))
 
+                                .lineToConstantHeading(new Vector2d(startx+7.5,starty))
+                                .lineToConstantHeading(new Vector2d(startx+7.5,starty+50))
+                                .lineToConstantHeading(new Vector2d(24+1.3125-0.5513245,-5+0.1))
+                                .lineToConstantHeading(new Vector2d(24+1.3125-0.5513245, -14))
+                                .lineToConstantHeading(new Vector2d(-13))
 
 
                                 //for Parking 1, this is fine

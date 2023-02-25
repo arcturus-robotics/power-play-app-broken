@@ -48,7 +48,7 @@ public class TrajectorySequenceTesting extends LinearOpMode {
 
     boolean tagNotDetected = false;
 
-    Pose2d startinglocatiion = new Pose2d(31 - 0.125, -64.28125+1.125, Math.toRadians(90));
+    Pose2d startinglocatiion = new Pose2d(31 - 0.125, -64.28125, Math.toRadians(90));
 
     @Override
     public void runOpMode() {

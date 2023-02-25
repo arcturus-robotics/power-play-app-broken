@@ -3,43 +3,29 @@ package org.firstinspires.ftc.teamcode.drive.opmode;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDriveV2;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
 
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
+
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-import com.acmerobotics.roadrunner.trajectory.DisplacementMarker;
-import com.acmerobotics.roadrunner.trajectory.TemporalMarker;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 
-import java.util.ArrayList;
-@Disabled
 
 @Autonomous
-public class TrajectorySequenceTestingV2 extends LinearOpMode
-{
+public class PPAutoLeftV1 extends LinearOpMode {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
     static final double FEET_PER_METER = 3.28084;
-    private DcMotorEx lift_Right;
-    private DcMotorEx lift_Left;
-    private DcMotorEx horizontal_slide;
-    private Servo lclaw;
-    private Servo rclaw;
+    private DcMotorEx lift;
+    private Servo claw;
+    private DistanceSensor leftdist, rightdist,frontdist;
 
 
     // Lens intrinsics
@@ -51,23 +37,12 @@ public class TrajectorySequenceTestingV2 extends LinearOpMode
     double cx = 402.145;
     double cy = 221.506;
 
-    double lclaw_open = 0.41;
-    double rclaw_open = 0.25;
-    double lclaw_closed = 0.5+0.045;
-    double rclaw_closed = 0.15-0.045;
-
-    int horizTargetPos = 0;
-
-
     // UNITS ARE METERS
     double tagsize = 0.166;
-    int ground = 0;
 
     int IDTOI1 = 0;
     int IDTOI2 = 1;
     int IDTOI3 = 2;// Tag ID 18 from the 36h11 family
-
-    int liftTargetPos = ground;
 
     AprilTagDetection tagOfInterest = null;
 
@@ -76,39 +51,23 @@ public class TrajectorySequenceTestingV2 extends LinearOpMode
     Pose2d startinglocatiion = new Pose2d(31 - 0.125, -64.28125, Math.toRadians(90));
 
     @Override
-    public void runOpMode()
-    {
+    public void runOpMode() {
         SampleMecanumDriveV2 drive = new SampleMecanumDriveV2(hardwareMap);
         drive.setPoseEstimate(startinglocatiion);
 
-        lift_Right = hardwareMap.get(DcMotorEx.class, "rightShooter");
-        lift_Right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        lift_Right.setTargetPosition(liftTargetPos);
-        lift_Right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lift_Right.setPower(1);
+        lift = hardwareMap.get(DcMotorEx.class, "leftShooter");
+        claw = hardwareMap.get(Servo.class, "claw");
 
-        lift_Left= hardwareMap.get(DcMotorEx.class, "leftShooter");
-        lift_Left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        lift_Left.setTargetPosition(liftTargetPos);
-        lift_Left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lift_Left.setPower(1);
-
-        lift_Left.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        horizontal_slide = hardwareMap.get(DcMotorEx.class, "horizSlide");
-        horizontal_slide .setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        horizontal_slide .setTargetPosition(horizTargetPos);
-        horizontal_slide .setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        horizontal_slide .setPower(0.9);
+        leftdist = hardwareMap.get(DistanceSensor.class, "sensor_range_left");
+        rightdist = hardwareMap.get(DistanceSensor.class, "sensor_range_right");
+        frontdist=hardwareMap.get(DistanceSensor.class, "sensor_range_front");
 
 
-        lclaw = hardwareMap.get(Servo.class, "lclaw");
-        rclaw = hardwareMap.get(Servo.class, "rclaw");
+        lift.setTargetPosition(0);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setPower(0.9);
 
-        lclaw.setPosition(lclaw_closed);
-        rclaw.setPosition(rclaw_closed);
-
-
+        claw.setPosition(0.9);
 
 //        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 //        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -144,5 +103,52 @@ public class TrajectorySequenceTestingV2 extends LinearOpMode
                 //.turn(45)
                 //.forward(10)
                 .build();
+
+        TrajectorySequence highcone2 = drive.trajectorySequenceBuilder(highcone1.end())
+                .forward(12)
+                //.forward(7)
+                .build();
+        TrajectorySequence highcone3 = drive.trajectorySequenceBuilder(highcone2.end())
+                .back(11)
+                .turn(Math.toRadians(52))
+                .back(5.2)
+                .turn(Math.toRadians(90))
+                .forward(29)
+                //.back(7)
+                .build();
+        TrajectorySequence smallScore = drive.trajectorySequenceBuilder(highcone3.end())
+                .back(26.5)
+                .turn(Math.toRadians(42))
+                .forward(10)
+                .build();
+
+        drive.followTrajectorySequence(highcone1);
+        lift.setTargetPosition(4400);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setPower(0.9);
+        sleep(3000);
+        drive.followTrajectorySequence(highcone2);
+        lift.setTargetPosition(4000);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setPower(0.9);
+        sleep(500);
+        claw.setPosition(0.68);
+        lift.setTargetPosition(850);
+        lift.setPower(0.9);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        drive.followTrajectorySequence(highcone3);
+        claw.setPosition(0.9);
+        sleep(1000);
+        lift.setTargetPosition(1850);
+        lift.setPower(0.9);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        sleep(1000);
+        drive.followTrajectorySequence(smallScore);
+        claw.setPosition(0.68);
+    }
+
+    public int DistSensAvg(DistanceSensor dist) {
+        int avg;
+        return 0;
     }
 }
