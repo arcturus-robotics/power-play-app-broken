@@ -22,7 +22,7 @@ public class MeepMeepTestingV2 {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(40, 40, Math.toRadians(249.761234517728*0.9), Math.toRadians(184.02607784577722*0.7), 15.76)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(starty, starty, Math.toRadians(90)))
+                        drive.trajectorySequenceBuilder(new Pose2d(48-half_bot-odowidth, starty, Math.toRadians(90)))
                                 /* for robot v2
                                 .strafeRight(4)
                                 .forward(50)
@@ -56,9 +56,9 @@ public class MeepMeepTestingV2 {
 
                                 .lineToConstantHeading(new Vector2d(startx+7.5,starty))
                                 .lineToConstantHeading(new Vector2d(startx+7.5,starty+50))
+                                .lineToConstantHeading(new Vector2d(24+1.3125,starty+50))
                                 .lineToConstantHeading(new Vector2d(24+1.3125-0.5513245,-5+0.1))
                                 .lineToConstantHeading(new Vector2d(24+1.3125-0.5513245, -14))
-                                .lineToConstantHeading(new Vector2d(-13))
 
 
                                 //for Parking 1, this is fine

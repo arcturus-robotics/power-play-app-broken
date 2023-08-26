@@ -1,40 +1,45 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDriveV2;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR_OG;
-import com.qualcomm.robotcore.hardware.TouchSensor;
-
 import java.util.ArrayList;
 
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous
-public class PPVisionAutoL extends LinearOpMode
-{
-    private ArcturusDriveNoRR_OG drive;
+public class PPOdoVisRight extends LinearOpMode {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
     static final double FEET_PER_METER = 3.28084;
-    private DcMotorEx lift,leftFront, leftRear, rightRear, rightFront;
+    private DcMotorEx lift;
     private Servo claw;
-    private TouchSensor touch_sensor;
+    private DistanceSensor leftdist, rightdist,frontdist;
 
-    private DistanceSensor sensorRange_left;
-    private DistanceSensor sensorRange_right;
+    double half_bot = 10.375/2;
+    double odowidth = 2.75;
+    double distsenswidth = 0.65;
+    double numloops = 0;
+    double distsum = 0;
+    double distavg = 0;
+    double currentdistvalue;
 
+    double startx = 24+half_bot;
+    double starty = -72+8.5;
 
     // Lens intrinsics
     // UNITS ARE PIXELS
@@ -56,30 +61,32 @@ public class PPVisionAutoL extends LinearOpMode
 
     boolean tagNotDetected = false;
 
+    //Pose2d startinglocatiion = new Pose2d(37.6, -64.28125, Math.toRadians(90));
+    Pose2d startinglocatiion = new Pose2d(48-half_bot-odowidth, starty, Math.toRadians(90));
+    //Pose2d startinglocatiion = new Pose2d(37.6, -64.28125, Math.toRadians(90));
     @Override
-    public void runOpMode()
-    {
-        //
+    public void runOpMode() {
+        SampleMecanumDriveV2 drive = new SampleMecanumDriveV2(hardwareMap);
+        drive.setPoseEstimate(startinglocatiion);
 
-        // intaketilt = hardwareMap.get(Servo.class, "ringpusher");
-        drive = new ArcturusDriveNoRR_OG(hardwareMap);
-        lift =  hardwareMap.get(DcMotorEx.class, "leftShooter");
-        lift.setTargetPosition(0);
-        lift.setPower(1);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
+        lift = hardwareMap.get(DcMotorEx.class, "leftShooter");
         claw = hardwareMap.get(Servo.class, "claw");
+
+        /*
+        leftdist = hardwareMap.get(DistanceSensor.class, "sensor_range_left");
+        rightdist = hardwareMap.get(DistanceSensor.class, "sensor_range_right");
+        frontdist=hardwareMap.get(DistanceSensor.class, "sensor_range_front");
+         */
+
+        lift.setTargetPosition(0);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setPower(0.9);
+
         claw.setPosition(0.9);
-
-        touch_sensor = hardwareMap.get(TouchSensor.class, "touch");
-
-        sensorRange_left = hardwareMap.get(DistanceSensor.class, "sensor_range_left");
-        sensorRange_right = hardwareMap.get(DistanceSensor.class, "sensor_range_right");
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
-
         camera.setPipeline(aprilTagDetectionPipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
@@ -98,16 +105,30 @@ public class PPVisionAutoL extends LinearOpMode
 
         telemetry.setMsTransmissionInterval(50);
 
-        /*
-         * The INIT-loop:
-         * This REPLACES waitForStart!
-         */
+        TrajectorySequence goingtohigh1 = drive.trajectorySequenceBuilder(startinglocatiion)
+
+                .lineToConstantHeading(new Vector2d(startx+7.5,starty))
+                .lineToConstantHeading(new Vector2d(startx+7.5,starty+48))
+                //.lineToConstantHeading(new Vector2d(24+1.3125,starty+50))
+                .build();
 
 
+        //parking
+        TrajectorySequence park2 = drive.trajectorySequenceBuilder(goingtohigh1.end())
+                .lineToConstantHeading(new Vector2d(startx+7.5+2, -13))
+                .build();
+
+        TrajectorySequence park1 = drive.trajectorySequenceBuilder(goingtohigh1.end())
+                .lineToConstantHeading(new Vector2d(12, -14))
+                .build();
+
+        TrajectorySequence park3 = drive.trajectorySequenceBuilder(goingtohigh1.end())
+                .lineToConstantHeading(new Vector2d(60+2, -11.5))
+                .build();
 
 
-        while (!isStarted() && !isStopRequested())
-        {
+        while (!isStarted() && !isStopRequested()) {
+
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
 
             if(currentDetections.size() != 0)
@@ -160,96 +181,67 @@ public class PPVisionAutoL extends LinearOpMode
                 }
 
             }
-
             telemetry.update();
             sleep(20);
+
+            /*
+            currentdistvalue = rightdist.getDistance(DistanceUnit.INCH);
+            distsum += currentdistvalue;
+            numloops += 1;
+            telemetry.addData("DistValue", currentdistvalue);
+            telemetry.update();
+             */
         }
 
-//        lift.setTargetPosition(200);
-//        lift.setPower(1);
-//        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        /*
-         * The START command just came in: now work off the latest snapshot acquired
-         * during the init loop.
-         */
-
-        /* Update the telemetry */
         if(tagOfInterest != null)
         {
             telemetry.addLine("Tag snapshot:\n");
             tagToTelemetry(tagOfInterest);
-            telemetry.update();
+            try {
+                telemetry.update();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         else
         {
             telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
             telemetry.update();
             boolean tagNotDetected = true;
-            drive.goingRight(300,0.5);
-            drive.goingForward(200,0);
-            drive.goingForward(2000,0.3);
         }
 
-        /* Actually do something useful */
-        //if(tagOfInterest == null){
-        // leftFront.setPower(0.1);
-        //rightFront.setPower(0.1);
-        //rightRear.setPower(0.1);
-        //leftRear.setPower(0.1);
-        //sleep(1000);
+        //distavg = distsum/numloops;
+        telemetry.addData("DistAvg", distavg);
+        telemetry.update();
+
         /*
-         * Insert your autonomous code here, presumably running some default configuration
-         * since the tag was never sighted during INIT
+        startinglocatiion = new Pose2d(72-half_bot-distavg-distsenswidth, -72+8.5, Math.toRadians(90));
+        highcone1 = drive.trajectorySequenceBuilder(startinglocatiion)
+                .lineToConstantHeading(new Vector2d(72-half_bot-distavg-distsenswidth-3,-72+8.5))
+                .lineToConstantHeading(new Vector2d(72-half_bot-distavg-distsenswidth-3,-72+8.5+50))
+                .lineToConstantHeading(new Vector2d(72-half_bot-distavg-distsenswidth-3-11.5,-72+8.5+50))
+                .build();
+
          */
-        //}
-        //else
-        //
-        if (tagNotDetected){
-
-        }
-        else if(tagOfInterest.id == IDTOI1){
-            drive.goingLeft(1100,0.5);
-            drive.goingForward(400,0);
-            drive.goingBackward(400,0.5);
-            drive.goingForward(400, 0);
-            drive.goingForward(1700,0.3);
-        }
-        else if(tagOfInterest.id == IDTOI2){
-            drive.goingRight(125,0.5);
-            drive.goingForward(400,0);
-            drive.goingBackward(400,0.5);
-            drive.goingForward(400, 0);
-            drive.goingForward(2000,0.3);
-            }
-        else {
-            drive.goingRight(1450,0.5);
-            drive.goingForward(400,0);
-            drive.goingBackward(400,0.5);
-            drive.goingForward(400, 0);
-            drive.goingForward(2000,0.3);
-
-            /*
-            leftFront.setPower(0.2);
-            rightFront.setPower(0.2);
-            rightRear.setPower(0.2);
-            leftRear.setPower(0.2);
-            sleep(7000);
-
-             */
-        }
-        drive.goingForward(500,0);
-        claw.setPosition(0.7);
-        lift.setTargetPosition(0);
-        lift.setPower(1);
+        lift.setTargetPosition(500);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        /*
-         * Insert your autonomous code here, probably using the tag pose to decide your configuration.
-         */
+        lift.setPower(0.9);
+        drive.followTrajectorySequence(goingtohigh1);
 
 
-        /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-        // while (opModeIsActive()) {sleep(20);}
+        try {
+            if (tagOfInterest.id == IDTOI1) {
+                drive.followTrajectorySequence(park1);
+
+            } else if (tagOfInterest.id == IDTOI2) {
+                drive.followTrajectorySequence(park2);
+            } else {
+                drive.followTrajectorySequence(park3);
+            }
+        }
+        catch (Exception e){
+            drive.followTrajectorySequence(park2);
+        }
     }
 
     void tagToTelemetry(AprilTagDetection detection)
@@ -260,9 +252,7 @@ public class PPVisionAutoL extends LinearOpMode
         telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
         telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
-        telemetry.addLine(String.format("touching", touch_sensor.isPressed()));
-        telemetry.addLine(String.format("left distance", sensorRange_left.getDistance(DistanceUnit.INCH)));
-        telemetry.addLine(String.format("right distance", sensorRange_right.getDistance(DistanceUnit.INCH)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
+
 }

@@ -64,9 +64,9 @@ public class DriveConstantsV2 {
      */
 
     //TO DO: change values
-    public static double kV = 0.0169;
-    public static double kA = 0.0031;
-    public static double kStatic = 0.0025;
+    public static double kV = 0.0038;
+    public static double kA = 0.005;
+    public static double kStatic = 0.017;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,

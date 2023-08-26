@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
-public class ArcturusDriveNoRR {
+public class ArcturusDriveNoRR_OG {
 
     private DcMotorEx leftFront;
     private DcMotorEx rightFront;
@@ -12,12 +12,12 @@ public class ArcturusDriveNoRR {
     private DcMotorEx leftRear;
 
 
-    public ArcturusDriveNoRR(HardwareMap hardwareMap)    {
+    public ArcturusDriveNoRR_OG(HardwareMap hardwareMap)    {
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftUp");
-        leftRear = hardwareMap.get(DcMotorEx.class, "leftBack");
-        rightRear = hardwareMap.get(DcMotorEx.class, "rightBack");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightUp");
+        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
+        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
+        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
 
     }
@@ -38,13 +38,15 @@ public class ArcturusDriveNoRR {
     }
 
     public void goingLeft (long time, double speed){
-        setMotorPowers(-speed, speed, speed, -speed);
+        //drive.setMotorPowers(0.7, -0.7, 0.7, -0.7);
+        setMotorPowers(speed, -speed, speed, -speed);
         sleep(time);
         setMotorPowers(0,0,0,0);
     }
 
     public void goingRight (long time, double speed){
-        setMotorPowers(speed, -speed, -speed, speed);
+        //drive.setMotorPowers(-0.7, 0.7, -0.7, 0.7);
+        setMotorPowers(-speed, speed, -speed, speed);
         sleep(time);
         setMotorPowers(0,0,0,0);
     }

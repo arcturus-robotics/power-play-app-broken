@@ -12,7 +12,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR;
+import org.firstinspires.ftc.teamcode.drive.ArcturusDriveNoRR_OG;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import java.util.ArrayList;
 
@@ -22,7 +22,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @Autonomous
 public class PPVisionAutoR extends LinearOpMode
 {
-    private ArcturusDriveNoRR drive;
+    private ArcturusDriveNoRR_OG drive;
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
@@ -59,7 +59,7 @@ public class PPVisionAutoR extends LinearOpMode
     {
         //
         // intaketilt = hardwareMap.get(Servo.class, "ringpusher");
-        drive = new ArcturusDriveNoRR(hardwareMap);
+        drive = new ArcturusDriveNoRR_OG(hardwareMap);
         lift =  hardwareMap.get(DcMotorEx.class, "leftShooter");
         lift.setTargetPosition(0);
         lift.setPower(1);

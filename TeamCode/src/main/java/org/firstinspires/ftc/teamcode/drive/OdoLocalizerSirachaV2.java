@@ -54,7 +54,7 @@ public class OdoLocalizerSirachaV2 extends ThreeTrackingWheelLocalizer {
      */
     //prev 0.979127
     //Important: change value
-    public static double X_MULTIPLIER = 0.988716; // Multiplier in the X direction
+    public static double X_MULTIPLIER = 1; // Multiplier in the X direction
     //0.982813
     //40
     //0.994619
@@ -64,7 +64,8 @@ public class OdoLocalizerSirachaV2 extends ThreeTrackingWheelLocalizer {
 
 
     //Important: change value
-    public static double Y_MULTIPLIER = 0.982834; // Multiplier in the Y direction
+//    public static double Y_MULTIPLIER = 0.982834*0.93664;
+ public static double Y_MULTIPLIER = 1;//Multiplier in the Y direction
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 
