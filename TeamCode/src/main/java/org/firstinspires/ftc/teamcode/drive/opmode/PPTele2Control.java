@@ -87,7 +87,7 @@ public class PPTele2Control extends OpMode {
 
 //        touch = hardwareMap.get(TouchSensor.class, "Touch");
 
-        //  lf = hardwareMap.get(DcMotorEx.class, "leftFront");
+        //lf = hardwareMap.get(DcMotorEx.class, "leftFront");
         //rr = hardwareMap.get(DcMotorEx.class, "rightRear");
         //lr = hardwareMap.get(DcMotorEx.class, "leftRear");
         //rf = hardwareMap.get(DcMotorEx.class, "rightFront");
